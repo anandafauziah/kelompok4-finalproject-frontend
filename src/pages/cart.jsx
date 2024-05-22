@@ -27,7 +27,7 @@ const Cart = () => {
   return (
     <div className="flex flex-col gap-16">
       <Helmet>
-        <title>Your Shopping Cart</title>
+        <title>JO'E Cape | Cart</title>
       </Helmet>
       <Header title="Your Shopping Cart" />
       <div className="cart-container px-40">
