@@ -5,6 +5,7 @@ import { FaCartPlus, FaMoneyBill } from "react-icons/fa";
 import { useState } from "react";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
+import { Helmet } from "react-helmet";
 
 const DetailProduct = () => {
   const { slug } = useParams();
@@ -37,6 +38,9 @@ const DetailProduct = () => {
 
   return (
     <div className="flex flex-col gap-16">
+      <Helmet>
+        <title>JO'E Cape | {product.name}</title>
+      </Helmet>
       <Header title={product.name} />
       <div className="flex flex-wrap items-center justify-center gap-5">
         <div className="flex justify-center px-10">
@@ -57,18 +61,18 @@ const DetailProduct = () => {
           </div>
           <div className="flex flex-wrap justify-between gap-3">
             <div className="flex items-center">
-              <div className="font-semibold text-lg me-2">Ukuran :</div>
+              <div className="font-semibold text-lg me-2">Size :</div>
               <div className="p-2 rounded duration-500 text-second font-semibold">XL</div>
             </div>
             <div className="flex items-center">
-              <div className="font-semibold text-lg me-2">Jumlah :</div>
-              <button className="px-3 py-1 rounded duration-500 text-yellow-600 font-semibold bg-yellow-50 hover:text-yellow-50 hover:bg-yellow-600" onClick={decrement}>
+              <div className="font-semibold text-lg me-2">Quantity :</div>
+              <button className="px-3 py-1 rounded duration-500 text-third font-semibold bg-first hover:text-first hover:bg-third" onClick={decrement}>
                 -
               </button>
-              <button className="px-3 py-1 rounded duration-500 text-yellow-600 font-semibold bg-yellow-100" disabled>
+              <button className="px-3 py-1 rounded duration-500 text-first font-semibold bg-third" disabled>
                 {qty}
               </button>
-              <button className="px-3 py-1 rounded duration-500 text-yellow-600 font-semibold bg-yellow-50 hover:text-yellow-50 hover:bg-yellow-600" onClick={increment}>
+              <button className="px-3 py-1 rounded duration-500 text-third font-semibold bg-first hover:text-first hover:bg-third" onClick={increment}>
                 +
               </button>
             </div>
@@ -77,13 +81,13 @@ const DetailProduct = () => {
             <button className="bg-first text-third rounded px-4 py-2 hover:text-first hover:bg-third duration-500">
               <div className="flex items-center gap-2">
                 <FaMoneyBill />
-                Beli
+                Buy
               </div>
             </button>
             <button className="bg-first text-third rounded px-4 py-2 hover:text-first hover:bg-third duration-500">
               <div className="flex items-center gap-2">
                 <FaCartPlus />
-                Keranjang
+                Cart
               </div>
             </button>
           </div>

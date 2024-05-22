@@ -1,6 +1,7 @@
 import ProductPage from "./pages/product";
 import DetailProduct from "./pages/detailProduct";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 function App() {
   return (
