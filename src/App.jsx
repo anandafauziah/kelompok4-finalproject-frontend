@@ -1,8 +1,6 @@
 import Login from "./pages/Login.jsx";
 import RegistrationForm from "./pages/Register.jsx";
 import Cart from "./pages/cart.jsx";
-import Login from "./pages/Login.jsx";
-import RegistrationForm from "./pages/Register.jsx";
 import ProductPage from "./pages/product";
 import DetailProduct from "./pages/detailProduct";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
