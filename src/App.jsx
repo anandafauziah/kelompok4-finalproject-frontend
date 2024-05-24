@@ -2,6 +2,7 @@ import Login from  './pages/Login.jsx'
 import RegistrationForm from './pages/Register.jsx'
 import ProductPage from "./pages/product";
 import DetailProduct from "./pages/detailProduct";
+import Payment from "./pages/Payment";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
@@ -14,6 +15,8 @@ function App() {
           <Route path="register" element={<RegistrationForm/>} />
           <Route path="/product" element={<ProductPage />} />
           <Route path="/product/:slug" element={<DetailProduct />} />
+          <Route path="/payment" element={<Payment />} />
+          
         </Routes>
       </Router>
     </div>
