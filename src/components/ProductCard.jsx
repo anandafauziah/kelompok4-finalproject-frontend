@@ -24,8 +24,14 @@ const ProductCard = (props) => {
       <div className={`relative w-full h-full border rounded-md`}>
         <img className={`w-full h-full ${isHovered ? "scale-[103%] duration-700" : ""}`} src={imageUrl} alt={name} />
         <div className={`absolute flex flex-col gap-1 top-5 right-5 ${isHovered ? "" : "hidden"}`}>
+          <a className="rounded-full p-3 border bg-white hover:bg-black hover:text-white duration-700" href="">
+            <FaHeart />
+          </a>
           <a className="rounded-full p-3 border bg-white hover:bg-black hover:text-white duration-700" href={`/product/${slugify(name)}`}>
             <FaEye />
+          </a>
+          <a className="rounded-full p-3 border bg-white hover:bg-black hover:text-white duration-700" href="">
+            <FaBookmark />
           </a>
         </div>
         <button className={`absolute bottom-5 left-10 w-3/4 p-2 bg-black text-white font-semibold rounded-md ${isHovered ? "slide-up" : "hidden"}`}>Add to Cart</button>

@@ -13,6 +13,11 @@ export default {
       },
     },
   },
+  variants: {
+    extend: {
+      borderColor: ['hover'],
+    },
+  },
   plugins: [require("daisyui")],
   daisyui: {
     themes: ["light", "dark"],
