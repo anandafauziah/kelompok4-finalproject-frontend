@@ -2,79 +2,102 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import InputComponent from "../components/input/InputComponent";
 import LoginImg from "../img/LoginImg.png";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setToken } from "../slices/authSlice";
+import axios from "axios";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [validation, setValidation] = useState([]);
+  const [loginError, setLoginError] = useState("");
+
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch("http://localhost:8000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+    const formData = new FormData();
 
-      const data = await response.json();
+    formData.append("email", email);
+    formData.append("password", password);
 
-      if (data.success) {
-        alert("Login berhasil");
+    setIsLoginLoading(true);
+
+    await axios
+      .post("http://localhost:8000/api/auth/login", formData)
+      .then((response) => {
+        const data = response.data;
+        dispatch(setToken(data.access_token));
+        setIsLoginLoading(false);
         navigate("/product");
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Terjadi kesalahan saat login");
-    }
+      })
+      .catch((err) => {
+        setLoginError(err.response.data.error);
+        setValidation(err.response.data);
+        setIsLoginLoading(false);
+      });
   };
 
   return (
-    <div className="grid grid-cols-2 bg-[#322C2B] py-12 px-20 h-dvh">
-      <Helmet>
-        <title>JO'E CAPE | Login</title>
-      </Helmet>
-      <div className="h-full rounded-l-sm bg-[#E4C59E]">
-        <div className="bg-beige-500 flex items-center justify-center mt-10">
-          <img src={LoginImg} alt="Fashion Image" className="w-[500px] h-[550px] rounded-lg" />
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>JO'E CAPE | Login</title>
+        </Helmet>
+      </HelmetProvider>
+      {isLoginLoading && (
+        <div className="absolute top-1/3 left-1/2 text-lg">
+          <span className="loading loading-spinner loading-lg text-second"></span>
         </div>
-      </div>
-      <div className=" bg-white shadow-md rounded-r-sm grid ">
-        <div className="ms-20 mt-12 w-3/4 p-8">
-          <a href="/product">
-            <h2 className="text-3xl font-bold mb-12 text-[#AF8260] text-center">JO'E CAPE</h2>
+      )}
+      {loginError && (
+        <div className="flex justify-center">
+          <div role="alert" className="absolute top-10 w-1/2 alert alert-error text-first font-semibold">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{loginError}</span>
+          </div>
+        </div>
+      )}
+
+      <div className="flex justify-center w-full bg-first md:py-12 md:px-20 px-5 py-10 min-h-screen">
+        <div className="md:w-2/3 bg-second md:block hidden">
+          <div className="bg-beige-500 flex items-center p-10 h-full">
+            <img src={LoginImg} alt="Fashion Image" />
+          </div>
+        </div>
+        <div className="bg-white md:w-3/4 p-8">
+          <img className="md:hidden mx-auto mb-4" src={LoginImg} alt="Fashion Image" width={150} />
+          <a href="/">
+            <h2 className="text-3xl font-bold text-[#AF8260] text-center border-b-2 border-[#A0A0A0] mb-3">JO'E CAPE</h2>
           </a>
-          <form onSubmit={handleSubmit} className="space-y-5 ">
-            <InputComponent id={"email"} name={"email"} label={"Email Address"} type={"email"} value={email} onChange={(e) => setEmail(e.target.value)} />
-            <InputComponent id={"password"} name={"password"} label={"Password"} type={"password"} value={password} onChange={(e) => setPassword(e.target.value)} />
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
+          <form onSubmit={handleLogin} className="space-y-5">
+            <InputComponent id={"email"} label={"Email Address"} type={"email"} value={email} onChange={(e) => setEmail(e.target.value)} />
+            <p className="my-2 text-red-500 text-xs">{validation.email && validation.email}</p>
+            <InputComponent id={"password"} label={"Password"} type={"password"} value={password} onChange={(e) => setPassword(e.target.value)} />
+            <p className="my-2 text-red-500 text-xs">{validation.password && validation.password}</p>
+            <div className="flex gap-x-10 items-center justify-between">
+              <div className="flex items-center w-full">
                 <input type="checkbox" id="remember" className="form-checkbox h-4 w-4 text-gray-600" />
-                <label htmlFor="remember" className="ml-2 block text-sm text-gray-600">
+                <label htmlFor="remember" className="ml-2 block text-xs md:text-sm text-gray-600">
                   Remember Me
                 </label>
               </div>
-              <div className="text-sm">
+              <div className="text-xs w-full md:text-sm">
                 <a href="#" className="font-medium text-gray-600 hover:text-gray-500">
                   Forgot Password?
                 </a>
               </div>
             </div>
             <div>
-              <button type="submit" className="w-full bg-[#322C2B] text-white p-2 rounded-md hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260]">
-                Login
-              </button>
+              <button className="w-full bg-[#322C2B] text-white p-2 rounded-md hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260]">Login</button>
             </div>
             <div className="text-center">
               <p className="text-md text-gray-600">
@@ -88,7 +111,7 @@ function Login() {
           </form>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
