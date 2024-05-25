@@ -9,24 +9,27 @@ import dateIcon from "../img/dateIcon.png";
 
 const payment = () => {
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
-      <div className="max-w-6xl mx-auto bg-white shadow-md rounded-md p-6 flex space-x-6">
+    <div className="bg-gray-100 min-h-screen md:p-6">
+      <div className="flex-col flex-col-reverse md:flex-row max-w-6xl mx-auto bg-white shadow-md rounded-md p-6 flex md:space-x-6">
         {/* Bagian Kiri: Checkout Form */}
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold mb-6 text-[#322C2B]">Checkout</h1>
-
+        <div className="md:flex-1 mt-3">
+          <h1 className="text-2xl font-bold mb-3 text-[#322C2B]">Checkout</h1>
           <div className="mb-4 border border-[#AF8260] rounded p-2">
             <div className="flex justify-between items-center border-b border-[#AF8260] pb-2">
               <span className="font-medium text-gray-400  ">Contact</span>
               <span className="text-[#27272]">Taylor Swift</span>
-              <button className="text-[#AF8260]">Edit</button>
+              <button className="text-[#AF8260] hover:text-[#322C2B]">
+                Edit
+              </button>
             </div>
             <div className="flex justify-between items-center border-b border-[#AF8260] pb-2 mt-4">
               <span className="font-medium text-gray-400  ">Ship to</span>
               <span className="text-[#27272]">
                 Via Firenze 23, 92023, Campobello di Licata AG, Italia
               </span>
-              <button className="text-[#AF8260]">Edit</button>
+              <button className="text-[#AF8260] hover:text-[#322C2B]">
+                Edit
+              </button>
             </div>
           </div>
 
@@ -45,13 +48,13 @@ const payment = () => {
             <h2 className="font-medium mb-2 text-[#322C2B]">Payment Methods</h2>
             <div className="flex space-x-4 mb-4">
               <div>
-                <button className="w-full border px-8 py-2 rounded text-center border-2 border-[#AF8260] hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260] flex items-center justify-center">
+                <button className="w-full border px-8 py-2 rounded text-center border-2 border-[#AF8260] hover:bg-[#322C2B] hover:text-white focus:outline-none focus:bg-[#322C2B] focus:text-[#AF8260] flex items-center justify-center">
                   <img src={icon} alt="MasterCard" className="h-[20px] me-2" />
                   <span>CREDIT CARD</span>
                 </button>
               </div>
               <div>
-                <button className="w-full border px-8 py-2 rounded text-center border-2 border-[#AF8260] hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260] flex items-center justify-center">
+                <button className="w-full border px-8 py-2 rounded text-center border-2 border-[#AF8260] hover:bg-[#322C2B] hover:text-white focus:outline-none focus:bg-[#322C2B] focus:text-[#AF8260] flex items-center justify-center">
                   <img
                     src={dollarIcon}
                     alt="MasterCard"
@@ -65,7 +68,7 @@ const payment = () => {
             <div className="space-y-4">
               <div className="relative">
                 <input
-                  type="text"
+                  type="number"
                   placeholder="Card Number"
                   className="w-full border py-2 px-3 rounded"
                 />
@@ -91,7 +94,7 @@ const payment = () => {
               <div className="flex space-x-4">
                 <div className="relative w-1/2">
                   <input
-                    type="text"
+                    type="date"
                     placeholder="Expiration (MM/YY)"
                     className="w-full border py-2 px-3 rounded"
                   />
@@ -115,17 +118,17 @@ const payment = () => {
           </div>
 
           <div className="flex justify-between items-center mt-6">
-            <a href="#" className="text-[#AF8260]">
+            <a href="#" className="text-[#AF8260] hover:text-[#322C2B]">
               Back to Cart
             </a>
-            <button className="bg-[#322C2B] text-white py-2 px-6 rounded">
+            <button className="bg-[#322C2B] text-white py-2 px-6 rounded hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260]">
               Pay Now
             </button>
           </div>
         </div>
 
         {/* Bagian Kanan: Order Details */}
-        <div className="max-w-xs">
+        <div className="md:max-w-xs w-full md:mt-14">
           <div className="bg-[#AF8260] shadow-md rounded-md p-4">
             <h2 className="text-xl text-white font-medium mb-4">
               Order Details
@@ -168,7 +171,7 @@ const payment = () => {
                   placeholder="Coupon code"
                   className="w-full border py-2 px-3 rounded mb-4 h-10"
                 />
-                <button className="w-3/4 h-10 ms-2 bg-[#322C2B] text-white rounded">
+                <button className="w-3/4 h-10 ms-2 bg-[#322C2B] text-white rounded hover:bg-white hover:text-[#322C2B]">
                   Add code
                 </button>
               </div>
