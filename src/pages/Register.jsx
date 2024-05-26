@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import InputComponent from "../components/input/InputComponent";
 import RegisterImg from "../img/RegisterImg.png";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { getProvinces, getCities, getPostalCode } from "../api";
 
 function Register() {
   const navigate = useNavigate();
