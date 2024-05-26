@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
-// import Header from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Helmet, HelmetProvider } from "react-helmet-async";
 import products from "../data/products"; // Import data produk
 
 const Cart = () => {
+  useEffect(() => {
+    document.title = "JO'E Cape | Cart";
+  }, []);
   // State untuk jumlah barang di keranjang belanja
   const [qty, setQty] = useState(1);
 
@@ -26,11 +27,6 @@ const Cart = () => {
 
   return (
     <div className="flex flex-col gap-16">
-      <HelmetProvider>
-        <Helmet>
-          <title>JO'E Cape | Cart</title>
-        </Helmet>
-      </HelmetProvider>
       <Header title="Your Shopping Cart" />
       <div className="cart-container px-40">
         {/* Table Title */}

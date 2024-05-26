@@ -2,12 +2,15 @@ import { useParams } from "react-router";
 import products from "../data/products";
 import Header from "../components/Header";
 import { FaCartPlus, FaMoneyBill } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
-import { Helmet } from "react-helmet";
 
 const DetailProductPage = () => {
+  useEffect(() => {
+    document.title = "JO'E Cape | Detail Product";
+  }, []);
+
   const { slug } = useParams();
 
   function unslugify(slug) {
@@ -38,9 +41,6 @@ const DetailProductPage = () => {
 
   return (
     <div className="flex flex-col gap-16">
-      <Helmet>
-        <title>JO'E Cape | {product.name}</title>
-      </Helmet>
       <Header title={product.name} />
       <div className="flex flex-wrap items-center justify-center gap-5">
         <div className="flex justify-center px-10">

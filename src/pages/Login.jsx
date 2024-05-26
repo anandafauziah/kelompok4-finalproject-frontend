@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import InputComponent from "../components/input/InputComponent";
 import LoginImg from "../img/LoginImg.png";
@@ -9,6 +9,9 @@ import { login } from "../slices/authSlice";
 import axios from "axios";
 
 function Login() {
+  useEffect(() => {
+    document.title = "JO'E Cape | Login";
+  }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoginLoading, setIsLoginLoading] = useState(false);
@@ -46,11 +49,6 @@ function Login() {
 
   return (
     <>
-      <HelmetProvider>
-        <Helmet>
-          <title>JO'E CAPE | Login</title>
-        </Helmet>
-      </HelmetProvider>
       {isLoginLoading && (
         <div className="absolute top-1/3 left-1/2 text-lg">
           <span className="loading loading-spinner loading-lg text-second"></span>
@@ -66,7 +64,6 @@ function Login() {
           </div>
         </div>
       )}
-
       <div className="flex justify-center w-full bg-first md:py-12 md:px-20 px-5 py-10 min-h-screen">
         <div className="md:w-2/3 bg-second md:block hidden">
           <div className="bg-beige-500 flex items-center p-10 h-full">

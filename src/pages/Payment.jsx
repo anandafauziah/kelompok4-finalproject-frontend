@@ -6,16 +6,13 @@ import dollarIcon from "../img/dollarIcon.png";
 import userIcon from "../img/userIcon.png";
 import cvvIcon from "../img/cvvIcon.png";
 import dateIcon from "../img/dateIcon.png";
-import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const payment = () => {
+  useEffect(() => {
+    document.title = "JO'E Cape | Payment";
+  }, []);
   return (
     <div className="bg-gray-100 min-h-screen md:p-6">
-      <HelmetProvider>
-        <Helmet>
-          <title>JO'E Cape | Payment</title>
-        </Helmet>
-      </HelmetProvider>
       <div className="flex-col flex-col-reverse md:flex-row max-w-6xl mx-auto bg-white shadow-md rounded-md p-6 flex md:space-x-6">
         {/* Bagian Kiri: Checkout Form */}
         <div className="md:flex-1 mt-3">

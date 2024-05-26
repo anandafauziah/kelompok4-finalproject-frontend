@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import InputComponent from "../components/input/InputComponent";
 import RegisterImg from "../img/RegisterImg.png";
-import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getProvinces, getCities, getPostalCode } from "../api";
 
 function Register() {
+  useEffect(() => {
+    document.title = "JO'E Cape | Register";
+  }, []);
   const navigate = useNavigate();
-
   // Form Data
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -115,11 +116,6 @@ function Register() {
 
   return (
     <>
-      <HelmetProvider>
-        <Helmet>
-          <title>JO'E CAPE | Register</title>
-        </Helmet>
-      </HelmetProvider>
       {isRegisterLoading && (
         <div className="absolute top-1/3 left-1/2 text-lg">
           <span className="loading loading-spinner loading-lg text-second"></span>
