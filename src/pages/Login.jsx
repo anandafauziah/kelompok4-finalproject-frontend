@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import InputComponent from "../components/input/InputComponent";
 import LoginImg from "../img/LoginImg.png";
-import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../slices/authSlice";
@@ -38,7 +37,7 @@ function Login() {
         const data = response.data;
         dispatch(login(data.access_token));
         setIsLoginLoading(false);
-        navigate("/product");
+        navigate("/");
       })
       .catch((err) => {
         setLoginError(err.response.data.error);

@@ -24,3 +24,13 @@ export const getPostalCode = async (id) => {
     return err.response.data;
   }
 };
+
+export const getUser = async (token) => {
+  try {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    const response = await axios.post(`http://localhost:8000/api/auth/me`);
+    return response.data;
+  } catch (err) {
+    return err.response.data;
+  }
+};

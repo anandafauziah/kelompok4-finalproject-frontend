@@ -1,13 +1,12 @@
 import { FaRightFromBracket, FaUserPlus } from "react-icons/fa6";
 import Logo from "./Logo";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { logout } from "../slices/authSlice";
 import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
 
 const Navbar = () => {
-  const { user, token } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
 
@@ -24,16 +23,16 @@ const Navbar = () => {
 
   return (
     <div className="navbar px-10 md:px-16 pt-4">
-      <a href="/">
-        <Logo size={150} />
+      <a href="/" className="scale-150 md:scale-100">
+        <Logo />
       </a>
       <div className="dropdown">
-        <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+        <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden ms-3">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
           </svg>
         </div>
-        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] shadow bg-base-100 rounded-box w-52">
+        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] shadow bg-base-100 rounded-box">
           <li>
             <a href="/">Home</a>
           </li>
@@ -91,7 +90,7 @@ const Navbar = () => {
               </svg>
             </button>
           </div>
-          <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
+          <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-44 md:w-64 bg-base-100 shadow">
             <div className="card-body">
               <label className="input input-bordered flex items-center">
                 <input type="text" className="grow" placeholder="Search" />
