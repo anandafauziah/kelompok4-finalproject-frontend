@@ -90,9 +90,9 @@ const Navbar = () => {
           <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
             <div className="card-body">
               <span className="font-bold text-lg">8 Items</span>
-              <span className="text-info">Subtotal: $999</span>
+              <span className="text-second">Subtotal: Rp1000000</span>
               <div className="card-actions">
-                <button className="btn btn-primary btn-block">View cart</button>
+                <button className="btn bg-first text-third btn-block">View cart</button>
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@ const Navbar = () => {
           </ul>
         </div>
       </div>
-      <ul className="menu menu-xs md:menu-md menu-horizontal hidden md:block">
+      <ul className="menu menu-xs md:menu-md menu-horizontal hidden">
         <li>
           <details>
             <summary>Auth</summary>
