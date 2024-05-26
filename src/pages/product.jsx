@@ -2,15 +2,17 @@ import ProductCard from "../components/ProductCard";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import products from "../data/products";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const ProductPage = () => {
   return (
     <div className="flex flex-col gap-24">
-      <Helmet>
-        <title>JO'E Cape | Products</title>
-      </Helmet>
-      <Header title="Products" currentPage="Products" />
+      <HelmetProvider>
+        <Helmet>
+          <title>JO'E Cape | Products</title>
+        </Helmet>
+      </HelmetProvider>
+      <Header title="Products" />
       <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-10 md:px-16">
         {products.map((product) => {
           return (

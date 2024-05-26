@@ -6,10 +6,16 @@ import dollarIcon from "../img/dollarIcon.png";
 import userIcon from "../img/userIcon.png";
 import cvvIcon from "../img/cvvIcon.png";
 import dateIcon from "../img/dateIcon.png";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const payment = () => {
   return (
     <div className="bg-gray-100 min-h-screen md:p-6">
+      <HelmetProvider>
+        <Helmet>
+          <title>JO'E Cape | Payment</title>
+        </Helmet>
+      </HelmetProvider>
       <div className="flex-col flex-col-reverse md:flex-row max-w-6xl mx-auto bg-white shadow-md rounded-md p-6 flex md:space-x-6">
         {/* Bagian Kiri: Checkout Form */}
         <div className="md:flex-1 mt-3">
@@ -18,18 +24,12 @@ const payment = () => {
             <div className="flex justify-between items-center border-b border-[#AF8260] pb-2">
               <span className="font-medium text-gray-400  ">Contact</span>
               <span className="text-[#27272]">Taylor Swift</span>
-              <button className="text-[#AF8260] hover:text-[#322C2B]">
-                Edit
-              </button>
+              <button className="text-[#AF8260] hover:text-[#322C2B]">Edit</button>
             </div>
             <div className="flex justify-between items-center border-b border-[#AF8260] pb-2 mt-4">
               <span className="font-medium text-gray-400  ">Ship to</span>
-              <span className="text-[#27272]">
-                Via Firenze 23, 92023, Campobello di Licata AG, Italia
-              </span>
-              <button className="text-[#AF8260] hover:text-[#322C2B]">
-                Edit
-              </button>
+              <span className="text-[#27272]">Via Firenze 23, 92023, Campobello di Licata AG, Italia</span>
+              <button className="text-[#AF8260] hover:text-[#322C2B]">Edit</button>
             </div>
           </div>
 
@@ -55,11 +55,7 @@ const payment = () => {
               </div>
               <div>
                 <button className="w-full border px-8 py-2 rounded text-center border-2 border-[#AF8260] hover:bg-[#322C2B] hover:text-white focus:outline-none focus:bg-[#322C2B] focus:text-[#AF8260] flex items-center justify-center">
-                  <img
-                    src={dollarIcon}
-                    alt="MasterCard"
-                    className="h-[20px] me-2"
-                  />
+                  <img src={dollarIcon} alt="MasterCard" className="h-[20px] me-2" />
                   <span>OTHER PAYMENT</span>
                 </button>
               </div>
@@ -67,25 +63,13 @@ const payment = () => {
 
             <div className="space-y-4">
               <div className="relative">
-                <input
-                  type="number"
-                  placeholder="Card Number"
-                  className="w-full border py-2 px-3 rounded"
-                />
+                <input type="number" placeholder="Card Number" className="w-full border py-2 px-3 rounded" />
                 <div className="absolute top-2 right-3">
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png"
-                    alt="MasterCard"
-                    className="h-6"
-                  />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="MasterCard" className="h-6" />
                 </div>
               </div>
               <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Holder Name"
-                  className="w-full border py-2 px-3 rounded"
-                />
+                <input type="text" placeholder="Holder Name" className="w-full border py-2 px-3 rounded" />
                 <div className="absolute top-2 right-3">
                   <img src={userIcon} alt="User Icon" className="h-6" />
                 </div>
@@ -93,22 +77,14 @@ const payment = () => {
 
               <div className="flex space-x-4">
                 <div className="relative w-1/2">
-                  <input
-                    type="date"
-                    placeholder="Expiration (MM/YY)"
-                    className="w-full border py-2 px-3 rounded"
-                  />
+                  <input type="date" placeholder="Expiration (MM/YY)" className="w-full border py-2 px-3 rounded" />
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                     <img src={dateIcon} alt="Date Icon" className="h-6" />
                   </div>
                 </div>
 
                 <div className="relative w-1/2">
-                  <input
-                    type="text"
-                    placeholder="CVV"
-                    className="w-full border py-2 px-3 rounded"
-                  />
+                  <input type="text" placeholder="CVV" className="w-full border py-2 px-3 rounded" />
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                     <img src={cvvIcon} alt="CVV Icon" className="h-6" />
                   </div>
@@ -121,26 +97,18 @@ const payment = () => {
             <a href="#" className="text-[#AF8260] hover:text-[#322C2B]">
               Back to Cart
             </a>
-            <button className="bg-[#322C2B] text-white py-2 px-6 rounded hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260]">
-              Pay Now
-            </button>
+            <button className="bg-[#322C2B] text-white py-2 px-6 rounded hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260]">Pay Now</button>
           </div>
         </div>
 
         {/* Bagian Kanan: Order Details */}
         <div className="md:max-w-xs w-full md:mt-14">
           <div className="bg-[#AF8260] shadow-md rounded-md p-4">
-            <h2 className="text-xl text-white font-medium mb-4">
-              Order Details
-            </h2>
+            <h2 className="text-xl text-white font-medium mb-4">Order Details</h2>
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                <img
-                  src={LoginImg}
-                  alt="Puma T-Shirt"
-                  className="w-12 h-12 mr-4"
-                />
+                <img src={LoginImg} alt="Puma T-Shirt" className="w-12 h-12 mr-4" />
                 <div>
                   <p className="font-medium text-[#322C2B]">Puma T-Shirt</p>
                   <p className="text-sm text-white">Size M</p>
@@ -151,11 +119,7 @@ const payment = () => {
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                <img
-                  src={RegisterImg}
-                  alt="Puma T-Shirt"
-                  className="w-12 h-12 mr-4"
-                />
+                <img src={RegisterImg} alt="Puma T-Shirt" className="w-12 h-12 mr-4" />
                 <div>
                   <p className="font-medium text-[#322C2B]">Puma T-Shirt</p>
                   <p className="text-sm text-white">Size M</p>
@@ -166,14 +130,8 @@ const payment = () => {
 
             <div className="border-t pt-4">
               <div className="flex">
-                <input
-                  type="text"
-                  placeholder="Coupon code"
-                  className="w-full border py-2 px-3 rounded mb-4 h-10"
-                />
-                <button className="w-3/4 h-10 ms-2 bg-[#322C2B] text-white rounded hover:bg-white hover:text-[#322C2B]">
-                  Add code
-                </button>
+                <input type="text" placeholder="Coupon code" className="w-full border py-2 px-3 rounded mb-4 h-10" />
+                <button className="w-3/4 h-10 ms-2 bg-[#322C2B] text-white rounded hover:bg-white hover:text-[#322C2B]">Add code</button>
               </div>
               <div className="flex justify-between mb-2 text-gray-600">
                 <p className="">Subtotal</p>

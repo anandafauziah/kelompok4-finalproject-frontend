@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 // import Header from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import products from "../data/products"; // Import data produk
 
 const Cart = () => {
@@ -26,9 +26,11 @@ const Cart = () => {
 
   return (
     <div className="flex flex-col gap-16">
-      <Helmet>
-        <title>JO'E Cape | Cart</title>
-      </Helmet>
+      <HelmetProvider>
+        <Helmet>
+          <title>JO'E Cape | Cart</title>
+        </Helmet>
+      </HelmetProvider>
       <Header title="Your Shopping Cart" />
       <div className="cart-container px-40">
         {/* Table Title */}
