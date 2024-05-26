@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { getProvinces, getCities, getPostalCode } from "../api";
 import axios from "axios";
 
-function RegistrationForm() {
+function Register() {
   const navigate = useNavigate();
 
   // Form Data
@@ -230,4 +230,4 @@ function RegistrationForm() {
   );
 }
 
-export default RegistrationForm;
+export default Register;

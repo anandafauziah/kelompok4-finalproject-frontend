@@ -5,7 +5,7 @@ import LoginImg from "../img/LoginImg.png";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setToken } from "../slices/authSlice";
+import { login } from "../slices/authSlice";
 import axios from "axios";
 
 function Login() {
@@ -33,7 +33,7 @@ function Login() {
       .post("http://localhost:8000/api/auth/login", formData)
       .then((response) => {
         const data = response.data;
-        dispatch(setToken(data.access_token));
+        dispatch(login(data.access_token));
         setIsLoginLoading(false);
         navigate("/product");
       })
