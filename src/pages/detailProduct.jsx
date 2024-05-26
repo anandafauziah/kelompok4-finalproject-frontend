@@ -7,7 +7,7 @@ import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
 import { Helmet } from "react-helmet";
 
-const DetailProduct = () => {
+const DetailProductPage = () => {
   const { slug } = useParams();
 
   function unslugify(slug) {
@@ -110,4 +110,4 @@ const DetailProduct = () => {
   );
 };
 
-export default DetailProduct;
+export default DetailProductPage;
