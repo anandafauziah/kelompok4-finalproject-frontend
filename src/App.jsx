@@ -1,5 +1,6 @@
 import Login from "./pages/Login.jsx";
 import RegistrationForm from "./pages/Register.jsx";
+import Payment from "./pages/Payment";
 import Cart from "./pages/cart.jsx";
 import ProductPage from "./pages/product";
 import DetailProduct from "./pages/detailProduct";
@@ -16,6 +17,7 @@ function App() {
           <Route path="/product/:slug" element={<DetailProduct />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/cart2" component={<Cart />} />
+          <Route path="/payment" element={<Payment />} />
         </Routes>
       </Router>
     </div>

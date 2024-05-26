@@ -81,50 +81,46 @@ function RegistrationForm() {
   };
 
   return (
-    <div className="grid grid-cols-2 bg-[#322C2B] py-12 px-20 h-dvh">
-      <Helmet>
-        <title>JO'E CAPE | Register</title>
-      </Helmet>
-      <div className="h-full rounded-l-sm bg-[#AF8260]">
-        <div className="bg-beige-500 flex items-center justify-center mt-10">
-          <img src={RegisterImg} alt="Fashion Image" className="w-[500px] h-[550px] rounded-lg" />
-        </div>
-      </div>
-      <div className="bg-white p-8 ">
-        <h2 className="text-3xl font-bold text-[#AF8260] text-center border-b-2 border-[#A0A0A0] mb-3">JO'E CAPE</h2>
-        <p className=""></p>
-        {errorMessage && <p className="text-red-500 mb-4 text-center">{errorMessage}</p>}
-        <form onSubmit={handleSubmit} className="space-y-1">
-          <InputComponent id={"username"} name={"username"} label={"Username"} type={"text"} value={formData.username} onChange={(e) => handleChange(e)} />
-          <div className="flex gap-4 ">
-            <InputComponent className="w-full" id="firstName" name="firstName" label="First Name" type="text" value={formData.firstName} onChange={(e) => handleChange(e)} />
-            <InputComponent className="w-full" id="lastName" name="lastName" label="Last Name" type="text" value={formData.lastName} onChange={(e) => handleChange(e)} />
-          </div>
-          <InputComponent id={"email"} name={"email"} label={"Email"} type={"text"} value={formData.email} onChange={(e) => handleChange(e)} />
-          <div className="flex gap-2">
-            <InputAddress type={"text"} placeholder={"City"} value={formData.address} onChange={(e) => handleChange(e)} />
-            <InputAddress type={"text"} placeholder={"Province"} value={formData.address} onChange={(e) => handleChange(e)} />
-            <InputAddress type={"text"} placeholder={"Zip"} value={formData.address} onChange={(e) => handleChange(e)} />
-          </div>
-          <InputComponent id={"phoneNumber"} name={"phoneNumber"} label={"Phone Number"} type={"tel"} value={formData.phoneNumber} onChange={(e) => handleChange(e)} />
-          <InputComponent id={"password"} name={"password"} label={"Password"} type={"password"} value={formData.password} onChange={(e) => handleChange(e)} />
-          <div>
-            <button type="submit" onSubmit={handleSubmit} className="w-full bg-[#322C2B] text-white p-2 rounded-md hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260] mt-8">
-              Sign Up
-            </button>
-          </div>
-          <div className="text-center">
-            <p className="text-lg text-gray-600">
-              Already have an account?
-              <Link to="/login" className="text-[#E4C59E] hover:text-orange-500 font-medium">
-                {" "}
-                Sign in
-              </Link>
-            </p>
-          </div>
-        </form>
-      </div>
+    <div className="grid md:grid-cols-2 bg-[#322C2B] md:py-12 md:px-20 h-dvh">
+    <div className="h-full rounded-l-sm bg-[#AF8260]">
+    <div className="bg-beige-500 flex items-center justify-center">
+        <img src={RegisterImg} alt="Fashion Image" className="md:mt-10 md:w-[500px] md:h-[550px] rounded-lg" />
     </div>
+    </div>
+  <div className="bg-white p-8 ">
+    <h2 className="text-3xl font-bold text-[#AF8260] text-center border-b-2 border-[#A0A0A0] mb-3">JO'E CAPE</h2>
+    <p className=""></p>
+    {errorMessage && <p className="text-red-500 mb-4 text-center">{errorMessage}</p>}
+    <form onSubmit={handleSubmit} className="space-y-1">
+    <InputComponent id={"username"} name={"username"}label={"Username"} type={"text"} value={formData.username} onChange={(e) =>handleChange(e)}/>
+    <div className="flex gap-4 ">
+      <InputComponent className="w-full" id="firstName" name="firstName" label="First Name" type="text" value={formData.firstName} onChange={(e) => handleChange(e)} />
+      <InputComponent className="w-full" id="lastName" name="lastName" label="Last Name" type="text" value={formData.lastName} onChange={(e) => handleChange(e)} />
+    </div>
+    <InputComponent id={"email"} name={"email"}label={"Email"} type={"text"} value={formData.email} onChange={(e) =>handleChange(e)}/>
+    <InputComponent id={"address"} name={"address"}label={"Address"} type={"text"} value={formData.address} onChange={(e) =>handleChange(e)}/>
+    <div className='flex gap-2'>
+      <InputAddress type={"text"} placeholder= {"City"}value={formData.address} onChange={(e) =>handleChange(e)}/>
+      <InputAddress type={"text"} placeholder= {"Province"}value={formData.address} onChange={(e) =>handleChange(e)}/>
+      <InputAddress type={"text"} placeholder= {"Zip"}value={formData.address} onChange={(e) =>handleChange(e)}/>
+    </div>
+    <InputComponent id={"phoneNumber"} name={"phoneNumber"}label={"Phone Number"} type={"tel"} value={formData.phoneNumber} onChange={(e) =>handleChange(e)}/>
+    <InputComponent id={"password"} name={"password"}label={"Password"} type={"password"} value={formData.password} onChange={(e) =>handleChange(e)}/>
+      <div>
+        <button 
+          type="submit"
+          onSubmit={handleSubmit}
+          className="w-full bg-[#322C2B] text-white p-2 rounded-md hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260] mt-8">Sign Up
+        </button>
+      </div>
+      <div className="text-center">
+          <p className="text-lg text-gray-600">Already have an account?
+          <Link to="/" className="text-[#E4C59E] hover:text-orange-500 font-medium"> Sign in</Link></p>
+      </div>
+    </form>
+</div>
+</div>
+
   );
 }
 

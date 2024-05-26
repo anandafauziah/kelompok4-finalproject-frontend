@@ -1,6 +1,7 @@
 import { FaRightFromBracket, FaUserPlus } from "react-icons/fa6";
 import Logo from "./Logo";
 
+
 const Navbar = () => {
   return (
     <div className="navbar px-5 md:px-16 pt-4">
