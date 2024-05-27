@@ -4,9 +4,12 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { logout } from "../slices/authSlice";
 import { useNavigate } from "react-router";
+import { useLocation } from "react-router";
 
 const Navbar = () => {
   const { token } = useSelector((state) => state.auth);
+
+  const location = useLocation();
 
   const navigate = useNavigate();
 
@@ -22,7 +25,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar px-10 md:px-16 pt-4">
+    <div className="navbar px-10 md:px-16 pt-4 z-auto">
       <a href="/" className="scale-150 md:scale-100">
         <Logo />
       </a>
@@ -50,18 +53,19 @@ const Navbar = () => {
               </li>
             </ul>
           </li>
-          {/* <li>
-            <a>Contact</a>
-          </li> */}
         </ul>
       </div>
       <div className="navbar hidden lg:flex lg:justify-center">
-        <ul className="menu menu-horizontal">
+        <ul className="menu menu-horizontal z-[1]">
           <li>
-            <a href="/">Home</a>
+            <a href="/" className={`duration-500 ${location.pathname == "/" ? "bg-first text-third font-semibold" : ""}`}>
+              Home
+            </a>
           </li>
           <li>
-            <a href="/product">Product</a>
+            <a href="/product" className={`duration-500 ${location.pathname == "/product" ? "bg-first text-third font-semibold" : ""}`}>
+              Product
+            </a>
           </li>
           <li>
             <details>
@@ -76,9 +80,6 @@ const Navbar = () => {
               </ul>
             </details>
           </li>
-          {/* <li>
-            <a>Contact</a>
-          </li> */}
         </ul>
       </div>
       <div className="flex-none gap-x-1">

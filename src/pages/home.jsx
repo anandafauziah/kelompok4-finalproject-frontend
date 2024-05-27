@@ -1,5 +1,4 @@
 import ProductCard from "../components/ProductCard";
-import Header from "../components/Header";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import products from "../data/products";
@@ -7,6 +6,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../slices/authSlice";
 import { getUser } from "../api";
+import Carousel from "../components/Carousel";
 
 const HomePage = () => {
   useEffect(() => {
@@ -30,12 +30,15 @@ const HomePage = () => {
   }, [token]);
 
   return (
-    <div className="flex flex-col gap-24">
+    <div className="flex flex-col">
       {/* <Header title={"Home"} /> */}
       <div className="bg-third">
         <Navbar />
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-10 md:px-16">
+      <div className="">
+        <Carousel />
+      </div>
+      <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-10 md:px-16 my-20">
         {products.map((product) => {
           return (
             <div key={product.id}>
