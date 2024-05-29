@@ -1,9 +1,9 @@
-import { FaHeart, FaEye, FaBookmark } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 import { useState } from "react";
 import "../App.css";
 
 const ProductCard = (props) => {
-  const { name = "Product Name", price = 100, imageUrl = "https://cartzio.vercel.app/static/media/mens-jecket.6f68430ae5803d37f883.jpg" } = props;
+  const { name = "Product Name", price = 100, imageUrl = "", onClick = () => {} } = props;
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -28,13 +28,15 @@ const ProductCard = (props) => {
             <FaEye />
           </a>
         </div>
-        <button className={`absolute bottom-5 left-10 w-3/4 p-2 bg-black text-white font-semibold rounded-md ${isHovered ? "slide-up" : "hidden"}`}>Add to Cart</button>
+        <button className={`absolute bottom-5 left-10 w-3/4 p-2 bg-black text-white font-semibold rounded-md ${isHovered ? "slide-up" : "hidden"}`} onClick={onClick}>
+          Add to Cart
+        </button>
       </div>
       <div className="p-2">
         <a href={`/product/${slugify(name)}`} className="text-lg font-semibold duration-700 hover:text-yellow-600">
-          {name}
+          {name.slice(0, 30)}
         </a>
-        <div className="">${price}</div>
+        <div className="">Rp{price}</div>
       </div>
     </div>
   );
