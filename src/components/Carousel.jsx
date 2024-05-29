@@ -2,8 +2,8 @@ const Carousel = (props) => {
   const { images } = props;
   return (
     <div className="carousel w-full h-44 md:h-full">
-      <div id="slide1" className="carousel-item relative w-full">
-        <img src="https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg" className="w-full" />
+      <div id="slide1" className="carousel-item relative w-full h-[500px]">
+        <img src="https://cartzio.vercel.app/static/media/black-print-t-shirt.4caa3fc5cda7134848e4.jpg" className="w-full" />
         <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
           <a href="#slide4" className="btn btn-circle">
             ❮
@@ -14,7 +14,7 @@ const Carousel = (props) => {
         </div>
       </div>
       <div id="slide2" className="carousel-item relative w-full">
-        <img src="https://img.daisyui.com/images/stock/photo-1609621838510-5ad474b7d25d.jpg" className="w-full" />
+        <img src="https://cartzio.vercel.app/static/media/mens-jecket.6f68430ae5803d37f883.jpg" className="w-full" />
         <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
           <a href="#slide1" className="btn btn-circle">
             ❮
@@ -25,7 +25,7 @@ const Carousel = (props) => {
         </div>
       </div>
       <div id="slide3" className="carousel-item relative w-full">
-        <img src="https://img.daisyui.com/images/stock/photo-1414694762283-acccc27bca85.jpg" className="w-full" />
+        <img src="https://cartzio.vercel.app/static/media/mens-jecket.6f68430ae5803d37f883.jpg" className="w-full" />
         <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
           <a href="#slide2" className="btn btn-circle">
             ❮
@@ -36,7 +36,7 @@ const Carousel = (props) => {
         </div>
       </div>
       <div id="slide4" className="carousel-item relative w-full">
-        <img src="https://img.daisyui.com/images/stock/photo-1665553365602-b2fb8e5d1707.jpg" className="w-full" />
+        <img src="https://cartzio.vercel.app/static/media/black-print-t-shirt.4caa3fc5cda7134848e4.jpg" className="w-full" />
         <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
           <a href="#slide3" className="btn btn-circle">
             ❮

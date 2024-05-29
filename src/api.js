@@ -36,3 +36,20 @@ export const getUser = async (token) => {
     return err.response.data;
   }
 };
+
+export const getProducts = async () => {
+  try {
+    const response = await axios.get(`${backendURL}/product`);
+    return response.data.products;
+  } catch (err) {
+    return err.response.data;
+  }
+};
+export const getProduct = async (slug) => {
+  try {
+    const response = await axios.get(`${backendURL}/product/${slug}`);
+    return response.data;
+  } catch (err) {
+    return err.response.data;
+  }
+};

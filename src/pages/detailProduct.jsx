@@ -1,10 +1,10 @@
 import { useParams } from "react-router";
-import products from "../data/products";
 import Header from "../components/Header";
 import { FaCartPlus, FaMoneyBill } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
+import { getProducts, getProduct } from "../api";
 
 const DetailProductPage = () => {
   useEffect(() => {
@@ -13,19 +13,37 @@ const DetailProductPage = () => {
 
   const { slug } = useParams();
 
-  function unslugify(slug) {
-    return slug.split("-").join(" ");
-  }
+  const [product, setProduct] = useState({});
+  const [products, setProducts] = useState([]);
 
-  const product = products.find((item) => item.name.toLowerCase() == unslugify(slug));
-
-  const relatedProducts = products
-    .filter((item) => {
-      if (item.id !== product.id) {
-        return item.category == product.category;
+  // Fetch Products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getProducts();
+        setProducts(data);
+      } catch (error) {
+        return;
       }
-    })
-    .slice(0, 5);
+    };
+    fetchProducts();
+  }, []);
+
+  // Fetch Product
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const data = await getProduct(slug);
+        setProduct(data.product);
+      } catch (error) {
+        return;
+      }
+    };
+    fetchProduct();
+  }, []);
+
+  // Get Related Products
+  const relatedProducts = products.filter((item) => item.category == product.category);
 
   const [qty, setQty] = useState(1);
 
@@ -41,7 +59,7 @@ const DetailProductPage = () => {
 
   return (
     <div className="flex flex-col gap-16">
-      <Header title={product.name} />
+      <Header title={product.title} />
       <div className="flex flex-wrap items-center justify-center gap-5">
         <div className="flex justify-center px-10">
           <div className="flex flex-col flex-wrap justify-center border">
@@ -50,11 +68,12 @@ const DetailProductPage = () => {
             <img src={product.image} alt={product.name} width={150} height={150} />
             <img src={product.image} alt={product.name} width={150} height={150} />
           </div>
-          <img className="w-3/4 border" src={product.image} alt={product.name} />
+          <img className="w-3/4 border" src={product.image} alt={product.title} />
         </div>
         <div className="flex flex-col gap-3 md:w-1/3 px-4">
-          <div className="font-semibold text-xl">{product.name}</div>
-          <div className="text-slate-500 font-semibold">${product.price}</div>
+          <div className="font-semibold text-xl">{product.title}</div>
+          <div className="font-semibold text-sm">{product.category}</div>
+          <div className="text-slate-500 font-semibold">Rp{product.price}</div>
           <div className="">
             <div className="font-semibold text-lg">Deskripsi:</div>
             <p className="text-slate-500">{product.description}</p>
@@ -98,7 +117,7 @@ const DetailProductPage = () => {
             {relatedProducts.map((product) => {
               return (
                 <div key={product.id}>
-                  <ProductCard name={product.name} price={product.price} detail={product.detail} imageUrl={product.image} />
+                  <ProductCard name={product.title} price={product.price} detail={product.description} imageUrl={product.image} />
                 </div>
               );
             })}
