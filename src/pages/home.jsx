@@ -23,7 +23,7 @@ const HomePage = () => {
         const data = await getUser(token);
         dispatch(setUser(data));
       } catch (error) {
-        console.log(error.response);
+        return;
       }
     };
     fetchUser();
