@@ -1,4 +1,4 @@
-import { FaRightFromBracket, FaUserPlus } from "react-icons/fa6";
+import { FaRightFromBracket, FaUserPlus, FaUser, FaPowerOff } from "react-icons/fa6";
 import Logo from "./Logo";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -16,8 +16,9 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
+    const backendURL = import.meta.env.VITE_BACKEND_URL;
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    await axios.post("http://localhost:8000/api/auth/logout").then((response) => {
+    await axios.post(`${backendURL}/api/auth/logout`).then((response) => {
       dispatch(logout());
       alert(response.data.message);
       navigate("/");
@@ -138,10 +139,10 @@ const Navbar = () => {
               </div>
               <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                 <li>
-                  <a>Profile</a>
-                </li>
-                <li>
-                  <a>Settings</a>
+                  <a>
+                    <FaUser />
+                    Profile
+                  </a>
                 </li>
                 <li>
                   <button
@@ -149,6 +150,7 @@ const Navbar = () => {
                       if (confirm("Logout?")) handleLogout();
                     }}
                   >
+                    <FaPowerOff />
                     Logout
                   </button>
                 </li>
@@ -158,7 +160,7 @@ const Navbar = () => {
         )}
       </div>
       {!token && (
-        <ul className="menu menu-xs md:menu-md menu-horizontal">
+        <ul className="menu menu-xs md:menu-md menu-horizontal z-[1]">
           <li>
             <details>
               <summary>Auth</summary>

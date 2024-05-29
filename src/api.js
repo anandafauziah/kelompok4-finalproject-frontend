@@ -1,8 +1,10 @@
 import axios from "axios";
 
+const backendURL = import.meta.env.VITE_BACKEND_URL;
+
 export const getProvinces = async () => {
   try {
-    const response = await axios.get("http://localhost:8000/api/getProvinces");
+    const response = await axios.get(`${backendURL}/getProvinces`);
     return response.data[0].results;
   } catch (err) {
     return err.response.data;
@@ -10,7 +12,7 @@ export const getProvinces = async () => {
 };
 export const getCities = async (id) => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/getCities/${id}`);
+    const response = await axios.get(`${backendURL}/getCities/${id}`);
     return response.data[0].results;
   } catch (err) {
     return err.response.data;
@@ -18,7 +20,7 @@ export const getCities = async (id) => {
 };
 export const getPostalCode = async (id) => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/getPostalCode/${id}`);
+    const response = await axios.get(`${backendURL}/getPostalCode/${id}`);
     return response.data[0].results.postal_code;
   } catch (err) {
     return err.response.data;
@@ -28,7 +30,7 @@ export const getPostalCode = async (id) => {
 export const getUser = async (token) => {
   try {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    const response = await axios.post(`http://localhost:8000/api/auth/me`);
+    const response = await axios.post(`${backendURL}/auth/me`);
     return response.data;
   } catch (err) {
     return err.response.data;

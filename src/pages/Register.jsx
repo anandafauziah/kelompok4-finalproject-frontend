@@ -10,6 +10,7 @@ function Register() {
   useEffect(() => {
     document.title = "JO'E Cape | Register";
   }, []);
+
   const navigate = useNavigate();
   // Form Data
   const [name, setName] = useState("");
@@ -44,7 +45,7 @@ function Register() {
         setProvinces(data);
         setIsProvincesLoading(false);
       } catch (error) {
-        console.log(error);
+        return;
       }
     };
     fetchProvinces();
@@ -58,7 +59,7 @@ function Register() {
       setCities(data);
       setIsCitiesLoading(false);
     } catch (error) {
-      console.log(error.response.data);
+      return;
     }
   };
 
@@ -70,7 +71,7 @@ function Register() {
       setPostalCode(data);
       setIsPostalCodeLoading(false);
     } catch (error) {
-      console.log(error.response.data);
+      return;
     }
   };
 
@@ -101,8 +102,10 @@ function Register() {
 
     setIsRegisterLoading(true);
 
+    const backendURL = import.meta.env.VITE_BACKEND_URL;
+
     await axios
-      .post("http://localhost:8000/api/auth/register", formData)
+      .post(`${backendURL}/auth/register`, formData)
       .then(() => {
         setIsRegisterLoading(false);
         alert("Successfully registered!");
@@ -121,7 +124,7 @@ function Register() {
           <span className="loading loading-spinner loading-lg text-second"></span>
         </div>
       )}
-      <div className="flex justify-center w-full bg-first md:py-12 md:px-20 px-5 py-10 min-h-screen">
+      <div className="flex justify-center w-full bg-first md:py-12 md:px-20 px-5 py-10 min-h-screen font-rubik">
         <div className="md:w-2/3 bg-second md:block hidden">
           <div className="bg-beige-500 flex items-center p-10 h-full">
             <img src={RegisterImg} alt="Fashion Image" />
