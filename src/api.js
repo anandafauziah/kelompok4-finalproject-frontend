@@ -33,7 +33,7 @@ export const getUser = async (token) => {
     const response = await axios.post(`${backendURL}/auth/me`);
     return response.data;
   } catch (err) {
-    return err.response.data;
+    return;
   }
 };
 

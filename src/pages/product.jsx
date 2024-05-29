@@ -28,11 +28,11 @@ const ProductPage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-24">
+    <div className="flex flex-col gap-24 min-h-screen">
       <Header title="Products" />
-      <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-16 md:px-16">
+      <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-16 md:px-16 grow">
         {isLoading ? (
-          <div className="absolute top-2/3 left-1/2 text-lg">
+          <div className="absolute top-1/3 text-lg">
             <span className="loading loading-bars loading-lg text-first"></span>
           </div>
         ) : (

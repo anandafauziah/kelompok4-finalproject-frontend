@@ -3,10 +3,12 @@ import { FaFacebook, FaInstagram, FaMapMarked } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <div className="w-full bg-first flex flex-col py-12 px-5">
+    <div className="w-full bg-first flex flex-col py-12 px-5 shrink-0">
       <div className="flex justify-evenly gap-10 flex-wrap">
         <div className="flex flex-col text-xl text-second gap-y-5">
-          <Logo size={100} />
+          <div className="brightness-200">
+            <Logo size={100} />
+          </div>
           <div className="flex items-center gap-x-3">
             <a href="">
               <FaFacebook />

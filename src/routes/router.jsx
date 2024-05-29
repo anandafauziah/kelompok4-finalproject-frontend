@@ -4,9 +4,17 @@ import ProductPage from "../pages/product";
 import DetailProductPage from "../pages/detailProduct";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Payment from "../pages/Payment";
+import UserPayment from "../pages/Payment";
 import Cart from "../pages/cart";
 import Admin from "../pages/admin";
+import UserProfile from "../pages/profile";
+import PrivateRoute from "./privateRoute";
+import Dashboard from "../views/admin/Dashboard";
+import User from "../views/admin/User";
+import AdminRoute from "./adminRoute";
+import Payment from "../views/admin/Payment";
+import Product from "../views/admin/Product";
+import Order from "../views/admin/Order";
 
 const router = createBrowserRouter([
   {
@@ -31,15 +39,67 @@ const router = createBrowserRouter([
   },
   {
     path: "/cart",
-    element: <Cart />,
+    element: <PrivateRoute />,
+    children: [
+      {
+        index: true,
+        element: <Cart />,
+      },
+    ],
+  },
+  {
+    path: "/profile",
+    element: <UserProfile />,
   },
   {
     path: "/payment",
-    element: <Payment />,
+    element: <UserPayment />,
   },
   {
-    path: "/admin/*",
-    element: <Admin />,
+    path: "/admin/",
+    element: <AdminRoute />,
+    children: [
+      {
+        path: "",
+        element: (
+          <Admin>
+            <Dashboard />
+          </Admin>
+        ),
+      },
+      {
+        path: "user",
+        element: (
+          <Admin>
+            <User />
+          </Admin>
+        ),
+      },
+      {
+        path: "product",
+        element: (
+          <Admin>
+            <Product />
+          </Admin>
+        ),
+      },
+      {
+        path: "order",
+        element: (
+          <Admin>
+            <Order />
+          </Admin>
+        ),
+      },
+      {
+        path: "payment",
+        element: (
+          <Admin>
+            <Payment />
+          </Admin>
+        ),
+      },
+    ],
   },
 ]);
 

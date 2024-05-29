@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../slices/authSlice";
 import { getUser } from "../api";
 
-const Profile = () => {
+const UserProfile = () => {
   useEffect(() => {
     document.title = "JO'E Cape | Profile";
   }, []);
@@ -39,4 +39,4 @@ const Profile = () => {
     </div>
   );
 };
-export default Profile;
+export default UserProfile;

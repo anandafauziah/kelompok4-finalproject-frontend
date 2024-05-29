@@ -47,14 +47,14 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <div className="bg-third">
         <Navbar />
       </div>
       <div className="text-center font-semibold text-2xl mt-24">New Arrivals</div>
-      <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-10 md:px-16 my-20">
+      <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-10 md:px-16 my-20 grow">
         {isLoading ? (
-          <div className="absolute top-2/3 left-1/2 text-lg">
+          <div className="absolute top-1/3 left-1/2 text-lg">
             <span className="loading loading-bars loading-lg text-first"></span>
           </div>
         ) : (

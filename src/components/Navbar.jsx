@@ -101,7 +101,7 @@ const Navbar = () => {
       <div className="flex-none gap-x-1">
         {token && (
           <>
-            {!user.is_admin && (
+            {!user?.is_admin && (
               <div className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
                   <div className="indicator">
@@ -136,15 +136,15 @@ const Navbar = () => {
                 </div>
               </div>
               <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                {!user.is_admin && (
+                {!user?.is_admin && (
                   <li>
-                    <a>
+                    <a href="/profile">
                       <FaUser />
                       Profile
                     </a>
                   </li>
                 )}
-                <li className={`${user.is_admin ? "block" : "hidden"}`}>
+                <li className={`${user?.is_admin ? "block" : "hidden"}`}>
                   <a href="/admin">
                     <FaTableColumns />
                     Dashboard

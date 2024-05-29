@@ -40,8 +40,8 @@ export default function User() {
     <>
       <div className="flex flex-wrap mt-10">
         <div className="w-full mb-12 px-4">
-          {/* <UserTable /> */}
-          <DataTable title="User List" columns={columns} data={data} pagination />
+          <UserTable />
+          {/* <DataTable title="User List" columns={columns} data={data} pagination /> */}
         </div>
       </div>
     </>

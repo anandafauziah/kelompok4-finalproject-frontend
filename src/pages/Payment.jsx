@@ -6,14 +6,15 @@ import dollarIcon from "../img/dollarIcon.png";
 import userIcon from "../img/userIcon.png";
 import cvvIcon from "../img/cvvIcon.png";
 import dateIcon from "../img/dateIcon.png";
+import { useEffect } from "react";
 
-const payment = () => {
+const UserPayment = () => {
   useEffect(() => {
     document.title = "JO'E Cape | Payment";
   }, []);
   return (
     <div className="bg-gray-100 min-h-screen md:p-6">
-      <div className="flex-col flex-col-reverse md:flex-row max-w-6xl mx-auto bg-white shadow-md rounded-md p-6 flex md:space-x-6">
+      <div className="flex-col md:flex-row max-w-6xl mx-auto bg-white shadow-md rounded-md p-6 flex md:space-x-6">
         {/* Bagian Kiri: Checkout Form */}
         <div className="md:flex-1 mt-3">
           <h1 className="text-2xl font-bold mb-3 text-[#322C2B]">Checkout</h1>
@@ -45,13 +46,13 @@ const payment = () => {
             <h2 className="font-medium mb-2 text-[#322C2B]">Payment Methods</h2>
             <div className="flex space-x-4 mb-4">
               <div>
-                <button className="w-full border px-8 py-2 rounded text-center border-2 border-[#AF8260] hover:bg-[#322C2B] hover:text-white focus:outline-none focus:bg-[#322C2B] focus:text-[#AF8260] flex items-center justify-center">
+                <button className="w-full border px-8 py-2 rounded text-center border-[#AF8260] hover:bg-[#322C2B] hover:text-white focus:outline-none focus:bg-[#322C2B] focus:text-[#AF8260] flex items-center justify-center">
                   <img src={icon} alt="MasterCard" className="h-[20px] me-2" />
                   <span>CREDIT CARD</span>
                 </button>
               </div>
               <div>
-                <button className="w-full border px-8 py-2 rounded text-center border-2 border-[#AF8260] hover:bg-[#322C2B] hover:text-white focus:outline-none focus:bg-[#322C2B] focus:text-[#AF8260] flex items-center justify-center">
+                <button className="w-full border px-8 py-2 rounded text-center border-[#AF8260] hover:bg-[#322C2B] hover:text-white focus:outline-none focus:bg-[#322C2B] focus:text-[#AF8260] flex items-center justify-center">
                   <img src={dollarIcon} alt="MasterCard" className="h-[20px] me-2" />
                   <span>OTHER PAYMENT</span>
                 </button>
@@ -150,4 +151,4 @@ const payment = () => {
   );
 };
 
-export default payment;
+export default UserPayment;
