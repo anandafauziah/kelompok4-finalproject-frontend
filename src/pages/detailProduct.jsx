@@ -5,6 +5,9 @@ import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
 import { getProducts, getProduct } from "../api";
+import axios from "axios";
+import { addToCart } from "../slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const DetailProductPage = () => {
   useEffect(() => {
@@ -57,6 +60,38 @@ const DetailProductPage = () => {
     }
   };
 
+  const { token } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
+
+  const backendURL = import.meta.env.VITE_BACKEND_URL;
+
+  const dispatch = useDispatch();
+
+  const handleAddToCart = async (productId, quantity) => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const existItem = cart.find((item) => item.cart_items[0].product.id === productId);
+
+      if (existItem?.cart_items[0].product.id === productId) {
+        await axios.put(
+          `${backendURL}/cart/${existItem.id}`,
+          { product_id: productId, quantity: existItem.cart_items[0].quantity + quantity },
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        );
+        dispatch(addToCart({ productId, quantity }));
+      } else if (existItem?.cart_items[0].product.id !== productId) {
+        await axios.post(`${backendURL}/cart`, { product_id: productId, quantity: quantity });
+        dispatch(addToCart({ productId, quantity }));
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-16">
       <Header title={product.title} />
@@ -103,10 +138,17 @@ const DetailProductPage = () => {
                 Buy
               </div>
             </button>
-            <button className="bg-first text-third rounded px-4 py-2 hover:text-first hover:bg-third duration-500">
+            <button
+              className="bg-first text-third rounded px-4 py-2 hover:text-first hover:bg-third duration-500"
+              onClick={() => {
+                if (handleAddToCart(product.id, qty)) {
+                  alert("Added to cart");
+                }
+              }}
+            >
               <div className="flex items-center gap-2">
                 <FaCartPlus />
-                Cart
+                Add to Cart
               </div>
             </button>
           </div>
@@ -117,7 +159,7 @@ const DetailProductPage = () => {
             {relatedProducts.map((product) => {
               return (
                 <div key={product.id}>
-                  <ProductCard name={product.title} price={product.price} detail={product.description} imageUrl={product.image} />
+                  <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
                 </div>
               );
             })}

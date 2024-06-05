@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import InputComponent from "../components/input/InputComponent";
 import RegisterImg from "../img/RegisterImg.png";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { getProvinces, getCities, getPostalCode } from "../api";
 
@@ -10,6 +11,14 @@ function Register() {
   useEffect(() => {
     document.title = "JO'E Cape | Register";
   }, []);
+
+  const { token } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token]);
 
   const navigate = useNavigate();
   // Form Data

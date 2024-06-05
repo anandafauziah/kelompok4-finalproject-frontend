@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../slices/authSlice";
 import { getUser } from "../api";
 import { getProducts } from "../api";
+import axios from "axios";
+import { setCart } from "../slices/cartSlice";
 
 const HomePage = () => {
   useEffect(() => {
@@ -28,10 +30,10 @@ const HomePage = () => {
     fetchUser();
   }, [token]);
 
+  // Fetch Products
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch Products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -45,6 +47,21 @@ const HomePage = () => {
     };
     fetchProducts();
   }, []);
+
+  // Fetch Cart
+  useEffect(() => {
+    const backendURL = import.meta.env.VITE_BACKEND_URL;
+    const fetchCart = async () => {
+      try {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const response = await axios.get(`${backendURL}/cart`);
+        dispatch(setCart(response.data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCart();
+  }, [token]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -61,7 +78,7 @@ const HomePage = () => {
           products?.map((product) => {
             return (
               <div key={product.id}>
-                <ProductCard name={product.title} price={product.price} detail={product.description} imageUrl={product.image} />
+                <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
               </div>
             );
           })

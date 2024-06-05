@@ -40,8 +40,19 @@ const Navbar = () => {
     });
   };
 
+  const { cart, totalPrice } = useSelector((state) => state.cart);
+
+  const indoCurrency = (price) => {
+    return price?.toLocaleString("id-ID", { styles: "currency", currency: "IDR" });
+  };
+
+  const getTotalItem = () => {
+    const total = cart?.reduce((acc, item) => acc + item.total_quantity, 0);
+    return total;
+  };
+
   return (
-    <div className="navbar px-10 md:px-16 pt-4 z-auto">
+    <div className="navbar flex justify-center px-10 md:px-16 pt-4">
       <a href="/" className="md:scale-100">
         <Logo />
       </a>
@@ -58,7 +69,7 @@ const Navbar = () => {
           <li>
             <a href="/product">Products</a>
           </li>
-          <li>
+          {/* <li>
             <a>Category</a>
             <ul className="p-2">
               <li>
@@ -68,7 +79,7 @@ const Navbar = () => {
                 <a>Submenu 2</a>
               </li>
             </ul>
-          </li>
+          </li> */}
         </ul>
       </div>
       <div className="navbar hidden lg:flex lg:justify-center">
@@ -83,7 +94,7 @@ const Navbar = () => {
               Product
             </a>
           </li>
-          <li>
+          {/* <li>
             <details>
               <summary>Category</summary>
               <ul className="px-3">
@@ -95,13 +106,13 @@ const Navbar = () => {
                 </li>
               </ul>
             </details>
-          </li>
+          </li> */}
         </ul>
       </div>
       <div className="flex-none gap-x-1">
         {token && (
           <>
-            {!user?.is_admin && (
+            {!user?.data?.is_admin && (
               <div className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
                   <div className="indicator">
@@ -113,13 +124,13 @@ const Navbar = () => {
                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                       />
                     </svg>
-                    <span className="badge badge-sm indicator-item">0</span>
+                    <span className="badge badge-sm indicator-item">{getTotalItem() || 0}</span>
                   </div>
                 </div>
                 <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
                   <div className="card-body">
-                    <span className="font-bold text-lg">8 Items</span>
-                    <span className="text-second">Subtotal: Rp1000000</span>
+                    <span className="font-bold text-lg">{getTotalItem() || 0} Item(s)</span>
+                    <span className="text-second">Total: Rp{indoCurrency(totalPrice)},00</span>
                     <div className="card-actions">
                       <a className="btn bg-first text-third btn-block" href="/cart">
                         View cart
@@ -136,7 +147,7 @@ const Navbar = () => {
                 </div>
               </div>
               <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                {!user?.is_admin && (
+                {!user?.data?.is_admin && (
                   <li>
                     <a href="/profile">
                       <FaUser />
@@ -144,7 +155,7 @@ const Navbar = () => {
                     </a>
                   </li>
                 )}
-                <li className={`${user?.is_admin ? "block" : "hidden"}`}>
+                <li className={`${user?.data?.is_admin ? "block" : "hidden"}`}>
                   <a href="/admin">
                     <FaTableColumns />
                     Dashboard
