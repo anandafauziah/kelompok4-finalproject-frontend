@@ -1,74 +1,147 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import products from "../data/products"; // Import data produk
+import { useSelector, useDispatch } from "react-redux";
+import { fetchCart, updateCart, removeFromCart } from "../slices/cartSlices";
 
 const Cart = () => {
   useEffect(() => {
     document.title = "JO'E Cape | Cart";
   }, []);
-  // State untuk jumlah barang di keranjang belanja
-  const [qty, setQty] = useState(1);
 
-  // Fungsi untuk menambah jumlah barang di keranjang belanja
-  const increment = () => {
-    setQty(qty + 1);
-  };
+  const { token } = useSelector((state) => state.auth);
+  const { carts, loading, totalPrice } = useSelector((state) => state.cart);
 
-  // Fungsi untuk mengurangi jumlah barang di keranjang belanja
-  const decrement = () => {
-    if (qty > 1) {
-      setQty(qty - 1);
+  const dispatch = useDispatch();
+
+  const handleUpdateCart = async (cartId, productId, quantity) => {
+    try {
+      dispatch(updateCart({ cartId, productId, quantity }, token));
+      dispatch(fetchCart(token));
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  // Ambil produk pertama dari data produk sebagai contoh
-  const product = products[0];
+  const handleRemoveItem = async (cartId, productId) => {
+    try {
+      dispatch(removeFromCart({ cartId, productId }, token));
+      dispatch(fetchCart(token));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Fetch Cart
+  useEffect(() => {
+    dispatch(fetchCart(token));
+  }, [dispatch]);
+
+  const indoCurrency = (price) => {
+    return price?.toLocaleString("id-ID", { styles: "currency", currency: "IDR" });
+  };
 
   return (
-    <div className="flex flex-col gap-16">
+    <div className="flex flex-col gap-16 min-h-screen">
       <Header title="Your Shopping Cart" />
-      <div className="cart-container px-40">
-        {/* Table Title */}
-        <div className="flex  justify-between bg-white rounded-xl shadow-md p-4 mb-5">
-          <div className="gap-gty mr-20">
-            <h3 className="product-title">Product</h3>
+      <div className="cart-container px-4 md:px-32 grow">
+        {loading && (
+          <div className="mx-auto text-center">
+            <span className="loading loading-spinner loading-lg text-second"></span>
           </div>
-          <h3 className="price">Price</h3>
-          <h3 className="quantity">Quantity</h3>
-          <h3 className="total">Total</h3>
-        </div>
+        )}
         {/* Item List */}
-        <div className="cart-items flex justify-between bg-white rounded-xl shadow-md p-4">
-          {/* image-name-remove */}
-          <div className="flex items-center">
-            <img src={product.image} alt={product.name} className="w-20 h-auto" />
-            <div className="product-name ml-5">
-              <h3>{product.name}</h3>
-              <p>Size L</p>
-              <button className="text-red-500">Remove</button>
-            </div>
-          </div>
-          <div className="cart-product-price flex items-center">Rp {product.price}</div>
-          <div className="flex items-center space-x-2">
-            <button className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third" onClick={decrement}>
-              -
-            </button>
-            <span className="px-3 py-1 rounded duration-500 text-first bg-third">{qty}</span>
-            <button className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third" onClick={increment}>
-              +
-            </button>
-          </div>
-          <div className="cart-product-total-price flex items-center">
-            <p>Rp {product.price * qty}</p>
-          </div>
+        <div className="overflow-x-auto">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {carts?.length > 0 ? (
+                carts?.map((item, id) => {
+                  return (
+                    <tr key={id}>
+                      <td>
+                        <div className="flex items-center gap-3">
+                          <div className="avatar">
+                            <div className="mask mask-squircle w-12 h-12">
+                              <img src={item.cart_items[0].product.image} alt={item.cart_items[0].product.title} />
+                            </div>
+                          </div>
+                          <div>
+                            <a href={`/product/${item.cart_items[0].product.slug}`} className="duration-500 hover:text-second">
+                              <div className="font-bold">{item.cart_items[0].product.title}</div>
+                            </a>
+                            <div className="text-xs">
+                              Size: <span className="opacity-75">{item.cart_items[0].product.size}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Rp{indoCurrency(item.cart_items[0].product.price)},00</td>
+                      <td>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third"
+                            onClick={() => {
+                              handleUpdateCart(item.id, item.cart_items[0].product.id, item.cart_items[0].quantity - 1);
+                            }}
+                          >
+                            -
+                          </button>
+                          <span className="px-3 py-1 rounded duration-500 text-first bg-third">{item.cart_items[0].quantity}</span>
+                          <button
+                            className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third"
+                            onClick={() => {
+                              handleUpdateCart(item.id, item.cart_items[0].product.id, item.cart_items[0].quantity + 1);
+                            }}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </td>
+                      <td>Rp{indoCurrency(item.cart_items[0].product.price * item.cart_items[0].quantity)},00</td>
+                      <td>
+                        <button
+                          className="btn btn-xs btn-error text-white"
+                          onClick={() => {
+                            if (confirm("Remove item?")) {
+                              handleRemoveItem(item.id, item.cart_items[0].product.id);
+                            }
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={5} className="text-center">
+                    Empty
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
-        <div className="total-checkoutbutton mt-10 flex justify-end">
-          <h2 className="text-first mr-5 font-semibold">Total: Rp {product.price * qty}</h2>
-          <button className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third">Checkout</button>
+
+        <div className="total-checkoutbutton mt-10 flex items-center justify-end">
+          {!loading && (
+            <>
+              <h2 className="text-first mr-5 font-semibold">Total: Rp{indoCurrency(totalPrice) || 0},00</h2>
+              <button className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third">Checkout</button>
+            </>
+          )}
         </div>
       </div>
-
       <Footer />
     </div>
   );

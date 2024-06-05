@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
 import { getProducts, getProduct } from "../api";
+import { addToCart, updateCart, fetchCart } from "../slices/cartSlices";
+import { useDispatch, useSelector } from "react-redux";
 
 const DetailProductPage = () => {
   useEffect(() => {
@@ -57,6 +59,28 @@ const DetailProductPage = () => {
     }
   };
 
+  const { user, token } = useSelector((state) => state.auth);
+  const { carts } = useSelector((state) => state.cart);
+
+  const dispatch = useDispatch();
+
+  const handleAddToCart = async (productId, quantity) => {
+    const existItem = carts.find((item) => item.cart_items[0].product.id === productId);
+    try {
+      if (existItem?.cart_items[0].product.id === productId) {
+        dispatch(updateCart({ cartId: existItem.id, productId, quantity: existItem.cart_items[0].quantity + quantity }, token));
+        fetchCart(token);
+        alert("Added to cart");
+      } else if (existItem?.cart_items[0].product.id !== productId) {
+        dispatch(addToCart({ productId, quantity }, token));
+        fetchCart(token);
+        alert("Added to cart");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-16">
       <Header title={product.title} />
@@ -103,10 +127,19 @@ const DetailProductPage = () => {
                 Buy
               </div>
             </button>
-            <button className="bg-first text-third rounded px-4 py-2 hover:text-first hover:bg-third duration-500">
+            <button
+              className="bg-first text-third rounded px-4 py-2 hover:text-first hover:bg-third duration-500"
+              onClick={() => {
+                if (user?.data?.is_admin) {
+                  alert("You're an admin");
+                } else {
+                  handleAddToCart(product.id, qty);
+                }
+              }}
+            >
               <div className="flex items-center gap-2">
                 <FaCartPlus />
-                Cart
+                Add to Cart
               </div>
             </button>
           </div>
@@ -117,7 +150,7 @@ const DetailProductPage = () => {
             {relatedProducts.map((product) => {
               return (
                 <div key={product.id}>
-                  <ProductCard name={product.title} price={product.price} detail={product.description} imageUrl={product.image} />
+                  <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
                 </div>
               );
             })}

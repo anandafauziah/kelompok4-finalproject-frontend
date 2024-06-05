@@ -39,7 +39,7 @@ const ProductPage = () => {
           products?.map((product) => {
             return (
               <div key={product.id}>
-                <ProductCard name={product.title} price={product.price} detail={product.description} imageUrl={product.image} />
+                <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
               </div>
             );
           })

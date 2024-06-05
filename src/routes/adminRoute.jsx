@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 const AdminRoute = () => {
   const { user, token } = useSelector((state) => state.auth);
 
-  return token && user.is_admin ? <Outlet /> : <Navigate to="/" />;
+  return token && user?.data?.is_admin ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default AdminRoute;

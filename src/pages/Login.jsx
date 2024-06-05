@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import InputComponent from "../components/input/InputComponent";
 import LoginImg from "../img/LoginImg.png";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../slices/authSlice";
 import axios from "axios";
 
@@ -11,6 +11,17 @@ function Login() {
   useEffect(() => {
     document.title = "JO'E Cape | Login";
   }, []);
+
+  const { token } = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token]);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoginLoading, setIsLoginLoading] = useState(false);
@@ -18,8 +29,6 @@ function Login() {
   const [loginError, setLoginError] = useState("");
 
   const dispatch = useDispatch();
-
-  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
