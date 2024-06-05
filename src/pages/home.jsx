@@ -7,7 +7,7 @@ import { setUser } from "../slices/authSlice";
 import { getUser } from "../api";
 import { getProducts } from "../api";
 import axios from "axios";
-import { setCart } from "../slices/cartSlice";
+// import { setCart } from "../slices/cartSlice";
 
 const HomePage = () => {
   useEffect(() => {
@@ -49,19 +49,19 @@ const HomePage = () => {
   }, []);
 
   // Fetch Cart
-  useEffect(() => {
-    const backendURL = import.meta.env.VITE_BACKEND_URL;
-    const fetchCart = async () => {
-      try {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await axios.get(`${backendURL}/cart`);
-        dispatch(setCart(response.data));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchCart();
-  }, [token]);
+  // useEffect(() => {
+  //   const backendURL = import.meta.env.VITE_BACKEND_URL;
+  //   const fetchCart = async () => {
+  //     try {
+  //       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  //       const response = await axios.get(`${backendURL}/cart`);
+  //       dispatch(setCart(response.data));
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchCart();
+  // }, [token]);
 
   return (
     <div className="flex flex-col min-h-screen">

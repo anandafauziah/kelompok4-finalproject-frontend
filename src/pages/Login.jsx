@@ -16,11 +16,11 @@ function Login() {
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (token) {
-  //     navigate("/");
-  //   }
-  // }, [token]);
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

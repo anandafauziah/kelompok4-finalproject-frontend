@@ -2,87 +2,54 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
-import { setCart, setTotalPrice, addToCart, removeItem } from "../slices/cartSlice";
-import axios from "axios";
+import { fetchCart, updateCart, removeFromCart } from "../slices/cartSlices";
 
 const Cart = () => {
   useEffect(() => {
     document.title = "JO'E Cape | Cart";
   }, []);
 
-  const [isLoading, setIsLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
-  const { cart, totalPrice } = useSelector((state) => state.cart);
+  const { carts, loading, totalPrice } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
 
+  const handleUpdateCart = async (cartId, productId, quantity) => {
+    try {
+      dispatch(updateCart({ cartId, productId, quantity }, token));
+      dispatch(fetchCart(token));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRemoveItem = async (cartId, productId) => {
+    try {
+      dispatch(removeFromCart({ cartId, productId }, token));
+      dispatch(fetchCart(token));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // Fetch Cart
   useEffect(() => {
-    const backendURL = import.meta.env.VITE_BACKEND_URL;
-    const fetchCart = async () => {
-      try {
-        setIsLoading(true);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await axios.get(`${backendURL}/cart`);
-        dispatch(setCart(response.data));
-        total(response.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchCart();
-  }, []);
+    dispatch(fetchCart(token));
+  }, [dispatch]);
 
   const indoCurrency = (price) => {
     return price?.toLocaleString("id-ID", { styles: "currency", currency: "IDR" });
-  };
-
-  const total = (cart) => {
-    if (Array.isArray(cart)) {
-      const total = cart.reduce((acc, curr) => acc + curr.total_price, 0);
-      if (total) {
-        dispatch(setTotalPrice(total));
-      }
-      return total;
-    }
-  };
-
-  const handleRemoveItem = (cartId, productId, token) => {
-    dispatch(removeItem({ cartId, productId }, token));
-    fetchCart();
-  };
-
-  const handleAddToCart = async (productId, quantity) => {
-    const backendURL = import.meta.env.VITE_BACKEND_URL;
-    try {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-      const existItem = cart.find((item) => item.cart_items[0].product.id === productId);
-
-      if (existItem?.cart_items[0].product.id === productId) {
-        await axios
-          .put(
-            `${backendURL}/cart/${existItem.id}`,
-            { product_id: productId, quantity: existItem.cart_items[0].quantity + quantity },
-            {
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-            }
-          )
-          .then((response) => console.log(response.data));
-        dispatch(addToCart({ productId, quantity }));
-      }
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   return (
     <div className="flex flex-col gap-16 min-h-screen">
       <Header title="Your Shopping Cart" />
       <div className="cart-container px-4 md:px-32 grow">
+        {loading && (
+          <div className="mx-auto text-center">
+            <span className="loading loading-spinner loading-lg text-second"></span>
+          </div>
+        )}
         {/* Item List */}
         <div className="overflow-x-auto">
           <table className="table">
@@ -96,14 +63,8 @@ const Cart = () => {
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
-                <tr>
-                  <td colSpan={5} className="text-center">
-                    Loading...
-                  </td>
-                </tr>
-              ) : cart.length > 0 ? (
-                cart.map((item, id) => {
+              {carts?.length > 0 ? (
+                carts?.map((item, id) => {
                   return (
                     <tr key={id}>
                       <td>
@@ -129,7 +90,7 @@ const Cart = () => {
                           <button
                             className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third"
                             onClick={() => {
-                              handleAddToCart(item.cart_items[0].product.id, -1);
+                              handleUpdateCart(item.id, item.cart_items[0].product.id, item.cart_items[0].quantity - 1);
                             }}
                           >
                             -
@@ -138,7 +99,7 @@ const Cart = () => {
                           <button
                             className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third"
                             onClick={() => {
-                              handleAddToCart(item.cart_items[0].product.id, 1);
+                              handleUpdateCart(item.id, item.cart_items[0].product.id, item.cart_items[0].quantity + 1);
                             }}
                           >
                             +
@@ -151,7 +112,7 @@ const Cart = () => {
                           className="btn btn-xs btn-error text-white"
                           onClick={() => {
                             if (confirm("Remove item?")) {
-                              handleRemoveItem(item.id, item.cart_items[0].product.id, token);
+                              handleRemoveItem(item.id, item.cart_items[0].product.id);
                             }
                           }}
                         >
@@ -173,7 +134,7 @@ const Cart = () => {
         </div>
 
         <div className="total-checkoutbutton mt-10 flex items-center justify-end">
-          {!isLoading && (
+          {!loading && (
             <>
               <h2 className="text-first mr-5 font-semibold">Total: Rp{indoCurrency(totalPrice) || 0},00</h2>
               <button className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third">Checkout</button>

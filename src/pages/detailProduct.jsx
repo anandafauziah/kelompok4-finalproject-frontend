@@ -5,8 +5,7 @@ import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
 import { getProducts, getProduct } from "../api";
-import axios from "axios";
-import { addToCart } from "../slices/cartSlice";
+import { addToCart, updateCart, fetchCart } from "../slices/cartSlices";
 import { useDispatch, useSelector } from "react-redux";
 
 const DetailProductPage = () => {
@@ -60,35 +59,25 @@ const DetailProductPage = () => {
     }
   };
 
-  const { token } = useSelector((state) => state.auth);
-  const { cart } = useSelector((state) => state.cart);
-
-  const backendURL = import.meta.env.VITE_BACKEND_URL;
+  const { user, token } = useSelector((state) => state.auth);
+  const { carts } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
 
   const handleAddToCart = async (productId, quantity) => {
+    const existItem = carts.find((item) => item.cart_items[0].product.id === productId);
     try {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const existItem = cart.find((item) => item.cart_items[0].product.id === productId);
-
       if (existItem?.cart_items[0].product.id === productId) {
-        await axios.put(
-          `${backendURL}/cart/${existItem.id}`,
-          { product_id: productId, quantity: existItem.cart_items[0].quantity + quantity },
-          {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-          }
-        );
-        dispatch(addToCart({ productId, quantity }));
+        dispatch(updateCart({ cartId: existItem.id, productId, quantity: existItem.cart_items[0].quantity + quantity }, token));
+        fetchCart(token);
+        alert("Added to cart");
       } else if (existItem?.cart_items[0].product.id !== productId) {
-        await axios.post(`${backendURL}/cart`, { product_id: productId, quantity: quantity });
-        dispatch(addToCart({ productId, quantity }));
+        dispatch(addToCart({ productId, quantity }, token));
+        fetchCart(token);
+        alert("Added to cart");
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -141,8 +130,10 @@ const DetailProductPage = () => {
             <button
               className="bg-first text-third rounded px-4 py-2 hover:text-first hover:bg-third duration-500"
               onClick={() => {
-                if (handleAddToCart(product.id, qty)) {
-                  alert("Added to cart");
+                if (user?.data?.is_admin) {
+                  alert("You're an admin");
+                } else {
+                  handleAddToCart(product.id, qty);
                 }
               }}
             >

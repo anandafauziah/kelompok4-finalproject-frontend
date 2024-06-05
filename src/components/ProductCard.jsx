@@ -1,10 +1,9 @@
 import { FaEye } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../App.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import axios from "axios";
-import { addToCart } from "../slices/cartSlice";
+import { fetchCart, addToCart, updateCart } from "../slices/cartSlices";
 
 const ProductCard = (props) => {
   const { id, title, price, imageUrl } = props;
@@ -28,45 +27,26 @@ const ProductCard = (props) => {
 
   const { user, token } = useSelector((state) => state.auth);
 
-  const { cart } = useSelector((state) => state.cart);
+  useEffect(() => {
+    dispatch(fetchCart(token));
+  }, [dispatch]);
 
-  const backendURL = import.meta.env.VITE_BACKEND_URL;
-
-  const fetchCart = async () => {
-    try {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const response = await axios.get(`${backendURL}/cart`);
-      dispatch(setCart(response.data));
-    } catch (error) {
-      return;
-    }
-  };
+  const { carts } = useSelector((state) => state.cart);
 
   const handleAddToCart = async (productId, quantity) => {
+    const existItem = carts.find((item) => item.cart_items[0].product.id === productId);
     try {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-      const existItem = cart.find((item) => item.cart_items[0].product.id === productId);
-
       if (existItem?.cart_items[0].product.id === productId) {
-        await axios
-          .put(
-            `${backendURL}/cart/${existItem.id}`,
-            { product_id: productId, quantity: existItem.cart_items[0].quantity + quantity },
-            {
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-            }
-          )
-          .then((response) => console.log(response.data));
-        dispatch(addToCart({ productId, quantity }));
+        dispatch(updateCart({ cartId: existItem.id, productId, quantity: existItem.cart_items[0].quantity + quantity }, token));
+        fetchCart(token);
+        alert("Added to cart");
       } else if (existItem?.cart_items[0].product.id !== productId) {
-        await axios.post(`${backendURL}/cart`, { product_id: productId, quantity: quantity }).then((response) => console.log(response.data));
-        dispatch(addToCart({ productId, quantity }));
+        dispatch(addToCart({ productId, quantity }, token));
+        fetchCart(token);
+        alert("Added to cart");
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -92,7 +72,6 @@ const ProductCard = (props) => {
                   alert("You're an admin");
                 } else {
                   handleAddToCart(id, 1);
-                  alert("Added to cart");
                 }
               } else {
                 navigate("/login");

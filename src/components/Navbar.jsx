@@ -40,14 +40,14 @@ const Navbar = () => {
     });
   };
 
-  const { cart, totalPrice } = useSelector((state) => state.cart);
+  const { carts, loading, totalPrice } = useSelector((state) => state.cart);
 
   const indoCurrency = (price) => {
     return price?.toLocaleString("id-ID", { styles: "currency", currency: "IDR" });
   };
 
   const getTotalItem = () => {
-    const total = cart?.reduce((acc, item) => acc + item.total_quantity, 0);
+    const total = carts?.reduce((acc, item) => acc + item.total_quantity, 0);
     return total;
   };
 
