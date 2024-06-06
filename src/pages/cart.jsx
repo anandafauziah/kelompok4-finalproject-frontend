@@ -1,41 +1,43 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCart, updateCart, removeFromCart } from "../slices/cartSlices";
+import useLogin from "../hooks/useLogin";
 
 const Cart = () => {
   useEffect(() => {
     document.title = "JO'E Cape | Cart";
   }, []);
 
-  const { token } = useSelector((state) => state.auth);
-  const { carts, loading, totalPrice } = useSelector((state) => state.cart);
+  useLogin();
 
   const dispatch = useDispatch();
-
-  const handleUpdateCart = async (cartId, productId, quantity) => {
-    try {
-      dispatch(updateCart({ cartId, productId, quantity }, token));
-      dispatch(fetchCart(token));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleRemoveItem = async (cartId, productId) => {
-    try {
-      dispatch(removeFromCart({ cartId, productId }, token));
-      dispatch(fetchCart(token));
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   // Fetch Cart
   useEffect(() => {
     dispatch(fetchCart(token));
   }, [dispatch]);
+
+  const { token } = useSelector((state) => state.auth);
+
+  const { carts, loading, totalPrice } = useSelector((state) => state.cart);
+
+  const handleUpdateCart = (cartId, productId, quantity) => {
+    try {
+      dispatch(updateCart({ cartId, productId, quantity }, token)).then(() => dispatch(fetchCart(token)));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRemoveItem = (cartId, productId) => {
+    try {
+      dispatch(removeFromCart({ cartId, productId }, token)).then(() => dispatch(fetchCart(token)));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const indoCurrency = (price) => {
     return price?.toLocaleString("id-ID", { styles: "currency", currency: "IDR" });
@@ -64,7 +66,7 @@ const Cart = () => {
             </thead>
             <tbody>
               {carts?.length > 0 ? (
-                carts?.map((item, id) => {
+                carts.map((item, id) => {
                   return (
                     <tr key={id}>
                       <td>

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   token: null,
+  expired: null,
   user: {},
 };
 
@@ -13,10 +14,13 @@ const authSlice = createSlice({
       state.user = action.payload;
     },
     login: (state, action) => {
-      state.token = action.payload;
+      const { token, expired } = action.payload;
+      state.token = token;
+      state.expired = expired;
     },
     logout: (state) => {
       state.token = null;
+      state.expired = null;
       state.user = {};
     },
   },

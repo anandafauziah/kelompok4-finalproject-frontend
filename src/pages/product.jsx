@@ -3,11 +3,16 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useState, useEffect } from "react";
 import { getProducts } from "../api";
+import { fetchCart } from "../slices/cartSlices";
+import { useDispatch, useSelector } from "react-redux";
+import useLogin from "../hooks/useLogin";
 
 const ProductPage = () => {
   useEffect(() => {
-    document.title = "JO'E Cape | Products";
+    document.title = "JO'E Cape | Product";
   }, []);
+
+  useLogin();
 
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState([]);
@@ -26,6 +31,16 @@ const ProductPage = () => {
     };
     fetchProducts();
   }, []);
+
+  // Fetch Cart if token exist
+  const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  if (token) {
+    useEffect(() => {
+      dispatch(fetchCart(token));
+    }, [token]);
+  }
 
   return (
     <div className="flex flex-col gap-24 min-h-screen">

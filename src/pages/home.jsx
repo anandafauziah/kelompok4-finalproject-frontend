@@ -6,34 +6,42 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../slices/authSlice";
 import { getUser } from "../api";
 import { getProducts } from "../api";
-import axios from "axios";
-// import { setCart } from "../slices/cartSlice";
+import { fetchCart } from "../slices/cartSlices";
+import useLogin from "../hooks/useLogin";
 
 const HomePage = () => {
   useEffect(() => {
     document.title = "JO'E Cape | Home";
   }, []);
 
-  // Fetch User Data
+  useLogin();
+
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const data = await getUser(token);
-        dispatch(setUser(data));
-      } catch (error) {
-        return;
-      }
-    };
-    fetchUser();
+    if (token) {
+      const fetchUser = async () => {
+        try {
+          const data = await getUser(token);
+          dispatch(setUser(data));
+        } catch (error) {
+          return;
+        }
+      };
+      fetchUser();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchCart(token));
+    }
   }, [token]);
 
   // Fetch Products
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -47,21 +55,6 @@ const HomePage = () => {
     };
     fetchProducts();
   }, []);
-
-  // Fetch Cart
-  // useEffect(() => {
-  //   const backendURL = import.meta.env.VITE_BACKEND_URL;
-  //   const fetchCart = async () => {
-  //     try {
-  //       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  //       const response = await axios.get(`${backendURL}/cart`);
-  //       dispatch(setCart(response.data));
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchCart();
-  // }, [token]);
 
   return (
     <div className="flex flex-col min-h-screen">

@@ -7,11 +7,14 @@ import Footer from "../components/Footer";
 import { getProducts, getProduct } from "../api";
 import { addToCart, updateCart, fetchCart } from "../slices/cartSlices";
 import { useDispatch, useSelector } from "react-redux";
+import useLogin from "../hooks/useLogin";
 
 const DetailProductPage = () => {
   useEffect(() => {
     document.title = "JO'E Cape | Detail Product";
   }, []);
+
+  useLogin();
 
   const { slug } = useParams();
 
@@ -69,16 +72,20 @@ const DetailProductPage = () => {
     try {
       if (existItem?.cart_items[0].product.id === productId) {
         dispatch(updateCart({ cartId: existItem.id, productId, quantity: existItem.cart_items[0].quantity + quantity }, token));
-        fetchCart(token);
+        dispatch(fetchCart(token));
         alert("Added to cart");
       } else if (existItem?.cart_items[0].product.id !== productId) {
         dispatch(addToCart({ productId, quantity }, token));
-        fetchCart(token);
+        dispatch(fetchCart(token));
         alert("Added to cart");
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const indoCurrency = (price) => {
+    return price?.toLocaleString("id-ID", { styles: "currency", currency: "IDR" });
   };
 
   return (
@@ -97,7 +104,7 @@ const DetailProductPage = () => {
         <div className="flex flex-col gap-3 md:w-1/3 px-4">
           <div className="font-semibold text-xl">{product.title}</div>
           <div className="font-semibold text-sm">{product.category}</div>
-          <div className="text-slate-500 font-semibold">Rp{product.price}</div>
+          <div className="text-slate-500 font-semibold">Rp{indoCurrency(product.price)},00</div>
           <div className="">
             <div className="font-semibold text-lg">Deskripsi:</div>
             <p className="text-slate-500">{product.description}</p>
@@ -132,7 +139,7 @@ const DetailProductPage = () => {
               onClick={() => {
                 if (user?.data?.is_admin) {
                   alert("You're an admin");
-                } else {
+                } else if (token) {
                   handleAddToCart(product.id, qty);
                 }
               }}

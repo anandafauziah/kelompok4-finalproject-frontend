@@ -1,6 +1,5 @@
 import React from "react";
-
-// components
+import useLogin from "../hooks/useLogin";
 
 import AdminNavbar from "../components/admin/Navbars/AdminNavbar";
 import Sidebar from "../components/admin/Sidebar/Sidebar";
@@ -8,6 +7,8 @@ import HeaderStats from "../components/admin/Headers/HeaderStats";
 
 const Admin = (props) => {
   document.title = "JO'E Cape | Dashboard";
+  useLogin();
+
   const { children } = props;
   return (
     <div className="font-rubik">

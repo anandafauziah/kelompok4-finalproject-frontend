@@ -66,11 +66,25 @@ const cartSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
+      .addCase(addToCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(addToCart.fulfilled, (state, action) => {
+        state.loading = false;
         state.carts.push(action.payload.cart);
         state.totalPrice += action.payload.cart.total_price;
       })
+      .addCase(addToCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(updateCart.fulfilled, (state, action) => {
+        state.loading = false;
         const { cartId } = action.payload;
         const cartIndex = state.carts.findIndex((cart) => cart.id === cartId);
         if (cartIndex !== -1) {
@@ -79,7 +93,16 @@ const cartSlice = createSlice({
           state.totalPrice += action.payload.cart.total_price;
         }
       })
+      .addCase(updateCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(removeFromCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(removeFromCart.fulfilled, (state, action) => {
+        state.loading = false;
         const { cartId, productId } = action.payload;
         const cartIndex = state.carts.findIndex((cart) => cart.id === cartId);
         if (cartIndex !== -1) {
@@ -89,6 +112,10 @@ const cartSlice = createSlice({
             state.carts[cartIndex].cartItems.splice(cartItemIndex, 1);
           }
         }
+      })
+      .addCase(removeFromCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });

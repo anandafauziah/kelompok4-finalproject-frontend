@@ -1,5 +1,5 @@
 import { FaEye } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../App.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
@@ -23,35 +23,29 @@ const ProductCard = (props) => {
   }
 
   const navigate = useNavigate();
+
   const dispatch = useDispatch();
 
   const { user, token } = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    dispatch(fetchCart(token));
-  }, [dispatch]);
-
   const { carts } = useSelector((state) => state.cart);
 
-  const handleAddToCart = async (productId, quantity) => {
-    const existItem = carts.find((item) => item.cart_items[0].product.id === productId);
+  const handleAddToCart = (productId, quantity) => {
+    const existItem = carts?.find((item) => item.cart_items?.length > 0 && item.cart_items[0].product.id === productId);
     try {
-      if (existItem?.cart_items[0].product.id === productId) {
-        dispatch(updateCart({ cartId: existItem.id, productId, quantity: existItem.cart_items[0].quantity + quantity }, token));
-        fetchCart(token);
+      if (existItem && existItem.cart_items?.length > 0 && existItem.cart_items[0].product.id === productId) {
+        dispatch(updateCart({ cartId: existItem.id, productId, quantity: existItem.cart_items[0].quantity + quantity }, token)).then(() => dispatch(fetchCart(token)));
         alert("Added to cart");
-      } else if (existItem?.cart_items[0].product.id !== productId) {
-        dispatch(addToCart({ productId, quantity }, token));
-        fetchCart(token);
+      } else {
+        dispatch(addToCart({ productId, quantity }, token)).then(() => dispatch(fetchCart(token)));
         alert("Added to cart");
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   };
 
   const indoCurrency = (price) => {
-    return price.toLocaleString("id-ID", { styles: "currency", currency: "IDR" });
+    return price?.toLocaleString("id-ID", { styles: "currency", currency: "IDR" });
   };
 
   return (
@@ -70,7 +64,7 @@ const ProductCard = (props) => {
               if (token) {
                 if (user?.data?.is_admin) {
                   alert("You're an admin");
-                } else {
+                } else if (token) {
                   handleAddToCart(id, 1);
                 }
               } else {

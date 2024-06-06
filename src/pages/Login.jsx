@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../slices/authSlice";
 import axios from "axios";
+import useLogin from "../hooks/useLogin";
+import { useLocation } from "react-router-dom";
 
 function Login() {
   useEffect(() => {
@@ -13,22 +15,22 @@ function Login() {
   }, []);
 
   const { token } = useSelector((state) => state.auth);
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (token) {
-      navigate("/");
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   if (token) {
+  //     window.location.back();
+  //   }else{
+  //     window
+  //   }
+  // });
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [validation, setValidation] = useState([]);
   const [loginError, setLoginError] = useState("");
-
-  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -46,7 +48,7 @@ function Login() {
       .post(`${backendURL}/auth/login`, formData)
       .then((response) => {
         const data = response.data;
-        dispatch(login(data.access_token));
+        dispatch(login({ token: data.access_token, expired: data.expires_in }));
         setIsLoginLoading(false);
         navigate("/");
       })
