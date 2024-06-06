@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../slices/authSlice";
 import axios from "axios";
-import useLogin from "../hooks/useLogin";
-import { useLocation } from "react-router-dom";
 
 function Login() {
   useEffect(() => {
@@ -18,13 +16,11 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (token) {
-  //     window.location.back();
-  //   }else{
-  //     window
-  //   }
-  // });
+  useEffect(() => {
+    if (token) {
+      history.back();
+    }
+  }, [token]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
