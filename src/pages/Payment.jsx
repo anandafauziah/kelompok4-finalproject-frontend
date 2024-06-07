@@ -13,7 +13,7 @@ const UserPayment = () => {
     document.title = "JO'E Cape | Payment";
   }, []);
   return (
-    <div className="bg-gray-100 min-h-screen md:p-6">
+    <div className="bg-second min-h-screen md:p-6 md:pt-20">
       <div className="flex-col md:flex-row max-w-6xl mx-auto bg-white shadow-md rounded-md p-6 flex md:space-x-6">
         {/* Bagian Kiri: Checkout Form */}
         <div className="md:flex-1 mt-3">
@@ -92,7 +92,7 @@ const UserPayment = () => {
           </div>
 
           <div className="flex justify-between items-center mt-6">
-            <a href="#" className="text-[#AF8260] hover:text-[#322C2B]">
+            <a href="/cart" className="text-[#AF8260] hover:text-[#322C2B]">
               Back to Cart
             </a>
             <button className="bg-[#322C2B] text-white py-2 px-6 rounded hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260]">Pay Now</button>

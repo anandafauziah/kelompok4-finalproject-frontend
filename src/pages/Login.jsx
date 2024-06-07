@@ -18,7 +18,7 @@ function Login() {
 
   useEffect(() => {
     if (token) {
-      history.back();
+      navigate("/");
     }
   }, [token]);
 

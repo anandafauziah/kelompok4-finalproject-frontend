@@ -36,11 +36,11 @@ const ProductPage = () => {
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  if (token) {
-    useEffect(() => {
+  useEffect(() => {
+    if (token) {
       dispatch(fetchCart(token));
-    }, [token]);
-  }
+    }
+  }, [token]);
 
   return (
     <div className="flex flex-col gap-24 min-h-screen">

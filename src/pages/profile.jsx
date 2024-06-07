@@ -28,9 +28,9 @@ const UserProfile = () => {
   }, [token]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <Header title={"Profile"} />
-      <div className="flex justify-center flex-wrap mt-10">
+      <div className="flex justify-center flex-wrap mt-10 grow">
         <div className="w-full px-4">
           <CardSettings />
         </div>

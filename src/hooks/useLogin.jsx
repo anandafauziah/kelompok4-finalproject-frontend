@@ -1,15 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "../slices/authSlice";
-import { useNavigate, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import { useEffect } from "react";
 
 function useLogin() {
   const { token, expired } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const location = useLocation();
-
-  const privateRoutes = ["/cart", "/profile", "/admin*"];
 
   useEffect(() => {
     if (token) {
@@ -25,15 +22,12 @@ function useLogin() {
 
   useEffect(() => {
     if (token) {
-      if (expired <= 0) {
+      if (expired <= 0 || expired == null) {
+        alert("Login expired, please log in again!");
         dispatch(logout());
-        console.log("logged out");
-        if (privateRoutes.includes(location.pathname)) {
-          navigate("/login");
-        }
       }
     }
-  }, [expired, dispatch, navigate, location, privateRoutes]);
+  }, [expired, dispatch, location]);
 
   return null;
 }
