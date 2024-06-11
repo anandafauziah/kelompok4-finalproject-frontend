@@ -207,9 +207,6 @@ function Register() {
               <div className="flex w-auto flex-col gap-y-1">
                 <label htmlFor="postalCode">Postal Code</label>
                 <select className="text-sm border rounded p-2" id="postalCode">
-                  <option selected disabled>
-                    Choose Postal Code
-                  </option>
                   {isPostalCodeLoading ? <option>Loading...</option> : <option value={postalCode}>{postalCode}</option>}
                 </select>
               </div>

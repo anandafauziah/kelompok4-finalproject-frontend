@@ -29,14 +29,14 @@ const ProductCard = (props) => {
   const { user, token } = useSelector((state) => state.auth);
   const { carts } = useSelector((state) => state.cart);
 
-  const handleAddToCart = (productId, quantity) => {
+  const handleAddToCart = async (productId, quantity) => {
     const existItem = carts?.find((item) => item.cart_items?.length > 0 && item.cart_items[0].product.id === productId);
     try {
       if (existItem && existItem.cart_items?.length > 0 && existItem.cart_items[0].product.id === productId) {
-        dispatch(updateCart({ cartId: existItem.id, productId, quantity: existItem.cart_items[0].quantity + quantity }, token)).then(() => dispatch(fetchCart(token)));
+        await dispatch(updateCart({ cartId: existItem.id, productId, quantity: existItem.cart_items[0].quantity + quantity }, token)).then(() => dispatch(fetchCart(token)));
         alert("Added to cart");
       } else {
-        dispatch(addToCart({ productId, quantity }, token)).then(() => dispatch(fetchCart(token)));
+        await dispatch(addToCart({ productId, quantity }, token)).then(() => dispatch(fetchCart(token)));
         alert("Added to cart");
       }
     } catch (error) {

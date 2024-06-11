@@ -5,6 +5,7 @@ import LoginImg from "../img/LoginImg.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../slices/authSlice";
+import { getUser } from "../slices/userSlice";
 import axios from "axios";
 
 function Login() {
@@ -45,6 +46,7 @@ function Login() {
       .then((response) => {
         const data = response.data;
         dispatch(login({ token: data.access_token, expired: data.expires_in }));
+        dispatch(getUser(data.access_token));
         setIsLoginLoading(false);
         navigate("/");
       })
@@ -64,7 +66,7 @@ function Login() {
       )}
       {loginError && (
         <div className="flex justify-center">
-          <div role="alert" className="absolute top-10 w-1/2 alert alert-error text-first font-semibold">
+          <div role="alert" className="absolute top-10 w-1/2 alert alert-error text-white font-semibold">
             <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>

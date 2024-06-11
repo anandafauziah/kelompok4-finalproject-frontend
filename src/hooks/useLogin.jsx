@@ -1,12 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "../slices/authSlice";
-import { useLocation } from "react-router";
 import { useEffect } from "react";
 
 function useLogin() {
   const { token, expired } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const location = useLocation();
 
   useEffect(() => {
     if (token) {
@@ -27,7 +25,7 @@ function useLogin() {
         dispatch(logout());
       }
     }
-  }, [expired, dispatch, location]);
+  }, [expired, dispatch]);
 
   return null;
 }
