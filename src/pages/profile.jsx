@@ -2,29 +2,25 @@ import Header from "../components/Header";
 import CardSettings from "../components/CardSettings";
 import Footer from "../components/Footer";
 import { useEffect } from "react";
+import useLogin from "../hooks/useLogin";
+import { getUser } from "../slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../slices/authSlice";
-import { getUser } from "../api";
 
 const UserProfile = () => {
   useEffect(() => {
     document.title = "JO'E Cape | Profile";
   }, []);
 
-  // Fetch User Data
-  const dispatch = useDispatch();
+  useLogin();
+
   const { token } = useSelector((state) => state.auth);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const data = await getUser(token);
-        dispatch(setUser(data));
-      } catch (error) {
-        return;
-      }
-    };
-    fetchUser();
+    if (token) {
+      dispatch(getUser(token));
+    }
   }, [token]);
 
   return (

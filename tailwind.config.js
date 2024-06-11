@@ -3,7 +3,7 @@ const plugin = require("tailwindcss/plugin");
 export default {
   purge: {
     enabled: true,
-    content: ["./public/**/*.html", "./public/*.html", "./src/**/*.jsx", "./src/*.jsx", "./src/**/*.html", "./src/*.html", "./public/**/*.jsx", "./public/*.jsx"],
+    content: ["./public/**/*.html", "./public/*.html", "./src/**/*.jsx", "./src/*.jsx", "./src/**/*.html", "./src/*.html", "./public/**/*.jsx", "./public/*.jsx", "node_modules/flowbite-react/lib/esm/**/*.js"],
     options: {
       safelist: [],
     },
@@ -82,6 +82,7 @@ export default {
     },
   },
   plugins: [
+    require("flowbite/plugin"),
     require("daisyui"),
     require("@tailwindcss/forms"),
     plugin(function ({ addComponents, theme }) {
