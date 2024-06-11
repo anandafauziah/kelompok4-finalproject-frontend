@@ -87,7 +87,6 @@ function CardSettings() {
   const [province, setProvince] = useState(user?.address && user?.address.province);
   const [city, setCity] = useState(user?.address && user?.address.city);
   const [addressLine, setAddressLine] = useState(user?.address && user?.address.address_line);
-  const [updateSuccess, setUpdateSuccess] = useState("");
   const [updateValidation, setUpdateValidation] = useState([]);
 
   const handleUpdateUser = async () => {
@@ -115,8 +114,8 @@ function CardSettings() {
       })
       .then((response) => {
         dispatch(getUser(token));
-        setUpdateSuccess(response.data.message);
         setIsLoading(false);
+        alert(response.data.message);
       })
       .catch((err) => {
         setUpdateValidation(err.response.data);
@@ -128,7 +127,6 @@ function CardSettings() {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [passwordSuccess, setPasswordSuccess] = useState("");
   const [passwordValidation, setPasswordValidation] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -152,9 +150,9 @@ function CardSettings() {
         },
       })
       .then((response) => {
-        setPasswordSuccess(response.data.message);
         setIsLoading(false);
         document.getElementById("passwordModal").close();
+        alert(response.data.message);
       })
       .catch((err) => {
         setPasswordValidation(err.response.data);
@@ -164,30 +162,11 @@ function CardSettings() {
 
   return (
     <>
-      {passwordSuccess && (
-        <div role="alert" className="absolute right-12 md:left-12 top-24 md:top-32 md:w-1/2 w-3/4 alert alert-success text-white font-semibold text-xs md:text-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{passwordSuccess}</span>
-        </div>
-      )}
-
-      {updateSuccess && (
-        <div role="alert" className="absolute right-12 md:left-12 top-24 md:top-32 md:w-1/2 w-3/4 alert alert-success text-white font-semibold text-xs md:text-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{updateSuccess}</span>
-        </div>
-      )}
-
       {isLoading && (
         <div className="absolute top-32 left-1/2">
           <span className="loading loading-spinner loading-lg text-first"></span>
         </div>
       )}
-
       <div className="relative flex flex-col min-w-0 break-words container mx-auto mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
         <div className="rounded-t bg-first mb-0 px-6 py-6">
           <h6 className="text-third text-xl font-bold">Account Settings</h6>
