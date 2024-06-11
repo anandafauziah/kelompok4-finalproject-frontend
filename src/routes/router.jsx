@@ -49,7 +49,13 @@ const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <UserProfile />,
+    element: <PrivateRoute />,
+    children: [
+      {
+        index: true,
+        element: <UserProfile />,
+      },
+    ],
   },
   {
     path: "/payment",

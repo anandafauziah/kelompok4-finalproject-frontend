@@ -3,8 +3,6 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../slices/authSlice";
-import { getUser } from "../api";
 import { getProducts } from "../api";
 import { fetchCart } from "../slices/cartSlices";
 import useLogin from "../hooks/useLogin";
@@ -20,20 +18,6 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    if (token) {
-      const fetchUser = async () => {
-        try {
-          const data = await getUser(token);
-          dispatch(setUser(data));
-        } catch (error) {
-          return;
-        }
-      };
-      fetchUser();
-    }
-  }, [token]);
 
   useEffect(() => {
     if (token) {

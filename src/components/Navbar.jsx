@@ -2,11 +2,10 @@ import { FaRightFromBracket, FaUserPlus, FaUser, FaPowerOff, FaTableColumns } fr
 import Logo from "./Logo";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { setUser, logout } from "../slices/authSlice";
+import { logout } from "../slices/authSlice";
 import { useNavigate } from "react-router";
 import { useLocation } from "react-router";
-import { getUser } from "../api";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const Navbar = () => {
   const location = useLocation();
@@ -15,23 +14,9 @@ const Navbar = () => {
 
   const dispatch = useDispatch();
 
-  const { user, token } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
   const { carts, loading, totalPrice } = useSelector((state) => state.cart);
-
-  // Fetch User Data
-  useEffect(() => {
-    if (token) {
-      const fetchUser = async () => {
-        try {
-          const data = await getUser(token);
-          dispatch(setUser(data));
-        } catch (error) {
-          return;
-        }
-      };
-      fetchUser();
-    }
-  }, [token]);
 
   const [logoutLoading, setLogoutLoading] = useState(false);
 
@@ -55,7 +40,7 @@ const Navbar = () => {
     <>
       {logoutLoading && (
         <div className="absolute top-28 left-5 md:left-1/2">
-          <span className="loading loading-spinner loading-md md:loading-lg text-second"></span>
+          <span className="loading loading-spinner loading-lg md:loading-lg text-second"></span>
         </div>
       )}
       <div className="navbar flex justify-center px-10 md:px-16 pt-4">

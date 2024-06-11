@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCart, updateCart, removeFromCart } from "../slices/cartSlices";
 import useLogin from "../hooks/useLogin";
+import { useNavigate } from "react-router";
 
 const Cart = () => {
   useEffect(() => {
@@ -13,6 +14,7 @@ const Cart = () => {
   useLogin();
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Fetch Cart
   useEffect(() => {
@@ -136,10 +138,12 @@ const Cart = () => {
         </div>
 
         <div className="total-checkoutbutton mt-10 flex items-center justify-end">
-          {!loading && (
+          {!loading && carts?.length > 0 && (
             <>
               <h2 className="text-first mr-5 font-semibold">Total: Rp{indoCurrency(totalPrice) || 0},00</h2>
-              <button className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third">Checkout</button>
+              <button className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third" onClick={() => navigate("/payment")}>
+                Checkout
+              </button>
             </>
           )}
         </div>
