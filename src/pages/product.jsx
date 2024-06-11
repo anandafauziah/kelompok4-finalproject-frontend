@@ -1,11 +1,11 @@
 import ProductCard from "../components/ProductCard";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useState, useEffect } from "react";
-import { getProducts } from "../api";
+import { useEffect } from "react";
 import { fetchCart } from "../slices/cartSlices";
 import { useDispatch, useSelector } from "react-redux";
 import useLogin from "../hooks/useLogin";
+import { fetchProduct } from "../slices/productSlice";
 
 const ProductPage = () => {
   useEffect(() => {
@@ -14,23 +14,12 @@ const ProductPage = () => {
 
   useLogin();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [products, setProducts] = useState([]);
-
   // Fetch Products
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getProducts();
-        setProducts(data);
-        setIsLoading(false);
-      } catch (error) {
-        return;
-      }
-    };
-    fetchProducts();
+    dispatch(fetchProduct());
   }, []);
+
+  const { products, loading } = useSelector((state) => state.product);
 
   // Fetch Cart if token exist
   const { token } = useSelector((state) => state.auth);
@@ -46,7 +35,7 @@ const ProductPage = () => {
     <div className="flex flex-col gap-24 min-h-screen">
       <Header title="Products" />
       <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-16 md:px-16 grow">
-        {isLoading ? (
+        {loading ? (
           <div className="absolute top-1/3 text-lg">
             <span className="loading loading-bars loading-lg text-first"></span>
           </div>

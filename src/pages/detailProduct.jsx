@@ -8,6 +8,7 @@ import { getProducts, getProduct } from "../api";
 import { addToCart, updateCart, fetchCart } from "../slices/cartSlices";
 import { useDispatch, useSelector } from "react-redux";
 import useLogin from "../hooks/useLogin";
+import { fetchProduct } from "../slices/productSlice";
 
 const DetailProductPage = () => {
   useEffect(() => {
@@ -18,37 +19,24 @@ const DetailProductPage = () => {
 
   const { slug } = useParams();
 
-  const [product, setProduct] = useState({});
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
 
   // Fetch Products
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await getProducts();
-        setProducts(data);
-      } catch (error) {
-        return;
-      }
-    };
-    fetchProducts();
+    dispatch(fetchProduct());
   }, []);
+
+  const { products } = useSelector((state) => state.product);
+  const [product, setProduct] = useState({});
 
   // Fetch Product
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const data = await getProduct(slug);
-        setProduct(data.product);
-      } catch (error) {
-        return;
-      }
-    };
-    fetchProduct();
-  }, []);
+    const product = products?.find((product) => product.slug === slug);
+    setProduct(product);
+  });
 
   // Get Related Products
-  const relatedProducts = products.filter((item) => item.category == product.category);
+  const relatedProducts = products.filter((product) => product.category == product.category).slice(-5);
 
   const [qty, setQty] = useState(1);
 
@@ -64,8 +52,6 @@ const DetailProductPage = () => {
 
   const { user, token } = useSelector((state) => state.auth);
   const { carts } = useSelector((state) => state.cart);
-
-  const dispatch = useDispatch();
 
   const handleAddToCart = async (productId, quantity) => {
     const existItem = carts.find((item) => item.cart_items[0].product.id === productId);
