@@ -4,7 +4,6 @@ import { FaCartPlus, FaMoneyBill } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
-import { getProducts, getProduct } from "../api";
 import { addToCart, updateCart, fetchCart } from "../slices/cartSlices";
 import { useDispatch, useSelector } from "react-redux";
 import useLogin from "../hooks/useLogin";
@@ -35,8 +34,8 @@ const DetailProductPage = () => {
     setProduct(product);
   });
 
-  // Get Related Products
-  const relatedProducts = products.filter((product) => product.category == product.category).slice(-5);
+  // Get Related Products - Take 4 product
+  const relatedProducts = products.filter((item) => item.category === product.category && item.id !== product.id).slice(-4);
 
   const [qty, setQty] = useState(1);
 
@@ -90,6 +89,7 @@ const DetailProductPage = () => {
         <div className="flex flex-col gap-3 md:w-1/3 px-4">
           <div className="font-semibold text-xl">{product.title}</div>
           <div className="font-semibold text-sm">{product.category}</div>
+          <div className="font-semibold">Year : {product.year}</div>
           <div className="text-slate-500 font-semibold">Rp{indoCurrency(product.price)},00</div>
           <div className="">
             <div className="font-semibold text-lg">Deskripsi:</div>
@@ -100,7 +100,7 @@ const DetailProductPage = () => {
               <div className="font-semibold text-lg me-2">Size :</div>
               <div className="p-2 rounded duration-500 text-second font-semibold">XL</div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center gap-x-1">
               <div className="font-semibold text-lg me-2">Quantity :</div>
               <button className="px-3 py-1 rounded duration-500 text-third font-semibold bg-first hover:text-first hover:bg-third" onClick={decrement}>
                 -
