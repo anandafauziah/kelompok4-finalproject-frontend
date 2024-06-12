@@ -58,8 +58,14 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/payment",
-    element: <UserPayment />,
+    path: "/checkout",
+    element: <PrivateRoute />,
+    children: [
+      {
+        index: true,
+        element: <UserPayment />,
+      },
+    ],
   },
   {
     path: "/admin/",

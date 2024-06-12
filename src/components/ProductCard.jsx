@@ -52,7 +52,7 @@ const ProductCard = (props) => {
     <>
       <div className="flex flex-col justify-center max-w-xs h-[450px] w-[350px]" onMouseEnter={handleHover} onMouseLeave={handleMouseLeave}>
         <div className={`relative w-full h-full border rounded-md`}>
-          <img className={`w-full h-full ${isHovered ? "scale-[103%] duration-700" : ""}`} src={"https://cartzio.vercel.app/static/media/mens-jecket.6f68430ae5803d37f883.jpg" || imageUrl} alt={title} />
+          <img className={`w-full h-full ${isHovered ? "scale-[103%] duration-700" : ""}`} src={imageUrl} alt={title} />
           <div className={`absolute flex flex-col gap-1 top-5 right-5 ${isHovered ? "" : "hidden"}`}>
             <a className="rounded-full p-3 border bg-white hover:bg-black hover:text-white duration-700" href={`/product/${slugify(title)}`}>
               <FaEye />
