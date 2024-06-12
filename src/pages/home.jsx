@@ -24,6 +24,7 @@ const HomePage = () => {
   }, [token]);
 
   const { products, loading } = useSelector((state) => state.product);
+  const cartLoading = useSelector((state) => state.cart.loading);
   const [newArrivals, setNewArrivals] = useState([]);
 
   // Fetch Products
@@ -37,6 +38,11 @@ const HomePage = () => {
       <div className="bg-third">
         <Navbar />
       </div>
+      {cartLoading && (
+        <div className="absolute top-32 left-1/2 text-lg">
+          <span className="loading loading-spinner loading-lg text-second"></span>
+        </div>
+      )}
       <div className="text-center font-semibold text-2xl mt-24">New Arrivals</div>
       <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-10 md:px-16 my-20 grow">
         {loading ? (

@@ -20,6 +20,7 @@ const ProductPage = () => {
   }, []);
 
   const { products, loading } = useSelector((state) => state.product);
+  const cartLoading = useSelector((state) => state.cart.loading);
 
   // Fetch Cart if token exist
   const { token } = useSelector((state) => state.auth);
@@ -34,6 +35,11 @@ const ProductPage = () => {
   return (
     <div className="flex flex-col gap-24 min-h-screen">
       <Header title="Products" />
+      {cartLoading && (
+        <div className="absolute top-32 left-1/2 text-lg">
+          <span className="loading loading-spinner loading-lg text-first"></span>
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-16 md:px-16 grow">
         {loading ? (
           <div className="absolute top-1/3 text-lg">

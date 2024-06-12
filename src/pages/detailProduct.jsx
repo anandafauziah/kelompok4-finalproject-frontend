@@ -50,18 +50,16 @@ const DetailProductPage = () => {
   };
 
   const { user, token } = useSelector((state) => state.auth);
-  const { carts } = useSelector((state) => state.cart);
+  const { carts, loading } = useSelector((state) => state.cart);
 
   const handleAddToCart = async (productId, quantity) => {
     const existItem = carts.find((item) => item.cart_items[0].product.id === productId);
     try {
       if (existItem?.cart_items[0].product.id === productId) {
-        dispatch(updateCart({ cartId: existItem.id, productId, quantity: existItem.cart_items[0].quantity + quantity }, token));
-        dispatch(fetchCart(token));
+        dispatch(updateCart({ cartId: existItem.id, productId, quantity: existItem.cart_items[0].quantity + quantity }, token)).then(() => dispatch(fetchCart(token)));
         alert("Added to cart");
       } else if (existItem?.cart_items[0].product.id !== productId) {
-        dispatch(addToCart({ productId, quantity }, token));
-        dispatch(fetchCart(token));
+        dispatch(addToCart({ productId, quantity }, token)).then(() => dispatch(fetchCart(token)));
         alert("Added to cart");
       }
     } catch (error) {
@@ -76,6 +74,11 @@ const DetailProductPage = () => {
   return (
     <div className="flex flex-col gap-16">
       <Header title={product.title} />
+      {loading && (
+        <div className="absolute top-32 left-1/2 text-lg">
+          <span className="loading loading-spinner loading-lg text-first"></span>
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-center gap-5">
         <div className="flex justify-center px-10">
           <div className="flex flex-col flex-wrap justify-center border">
