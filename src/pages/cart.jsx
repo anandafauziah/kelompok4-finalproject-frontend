@@ -141,7 +141,7 @@ const Cart = () => {
           {!loading && carts?.length > 0 && (
             <>
               <h2 className="text-first mr-5 font-semibold">Total: Rp{indoCurrency(totalPrice) || 0},00</h2>
-              <button className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third" onClick={() => navigate("/payment")}>
+              <button className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third" onClick={() => navigate("/checkout")}>
                 Checkout
               </button>
             </>
