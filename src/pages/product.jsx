@@ -35,8 +35,8 @@ const ProductPage = () => {
   return (
     <div className="flex flex-col gap-24 min-h-screen">
       <Header title="Products" />
-      {cartLoading && (
-        <div className="absolute top-32 left-1/2 text-lg">
+      {cartLoading && !loading && (
+        <div className="fixed top-32 left-1/2 text-lg z-[9999]">
           <span className="loading loading-spinner loading-lg text-first"></span>
         </div>
       )}

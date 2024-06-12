@@ -78,7 +78,7 @@ const DetailProductPage = () => {
     <div className="flex flex-col gap-16">
       <Header title={product.title} />
       {loading && (
-        <div className="absolute top-32 left-1/2 text-lg">
+        <div className="fixed top-32 left-1/2 text-lg z-[9999]">
           <span className="loading loading-spinner loading-lg text-first"></span>
         </div>
       )}

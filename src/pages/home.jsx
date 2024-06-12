@@ -38,9 +38,9 @@ const HomePage = () => {
       <div className="bg-third">
         <Navbar />
       </div>
-      {cartLoading && (
-        <div className="absolute top-32 left-1/2 text-lg">
-          <span className="loading loading-spinner loading-lg text-second"></span>
+      {cartLoading && !loading && (
+        <div className="fixed top-32 left-1/2 text-lg z-[9999]">
+          <span className="loading loading-spinner loading-lg text-first"></span>
         </div>
       )}
       <div className="text-center font-semibold text-2xl mt-24">New Arrivals</div>
