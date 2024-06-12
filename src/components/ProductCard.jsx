@@ -26,7 +26,8 @@ const ProductCard = (props) => {
 
   const dispatch = useDispatch();
 
-  const { user, token } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
   const { carts } = useSelector((state) => state.cart);
 
   const handleAddToCart = async (productId, quantity) => {
@@ -61,13 +62,12 @@ const ProductCard = (props) => {
           <button
             className={`absolute bottom-5 left-10 w-3/4 p-2 bg-black text-white font-semibold rounded-md ${isHovered ? "slide-up" : "hidden"}`}
             onClick={() => {
-              if (token) {
-                if (user?.data?.is_admin) {
-                  alert("You're an admin");
-                } else if (token) {
-                  handleAddToCart(id, 1);
-                }
-              } else {
+              if (token && !user?.data.is_admin) {
+                handleAddToCart(id, 1);
+              } else if (token && user?.data.is_admin) {
+                alert("You're an admin");
+              } else if (!token) {
+                alert("Please log in first");
                 navigate("/login");
               }
             }}

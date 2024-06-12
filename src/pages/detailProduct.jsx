@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Header from "../components/Header";
 import { FaCartPlus, FaMoneyBill } from "react-icons/fa";
 import { useState, useEffect } from "react";
@@ -49,8 +49,11 @@ const DetailProductPage = () => {
     }
   };
 
-  const { user, token } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
   const { carts, loading } = useSelector((state) => state.cart);
+
+  const navigate = useNavigate();
 
   const handleAddToCart = async (productId, quantity) => {
     const existItem = carts.find((item) => item.cart_items[0].product.id === productId);
@@ -117,7 +120,19 @@ const DetailProductPage = () => {
             </div>
           </div>
           <div className="flex items-center flex-wrap gap-3">
-            <button className="bg-first text-third rounded px-4 py-2 hover:text-first hover:bg-third duration-500">
+            <button
+              className="bg-first text-third rounded px-4 py-2 hover:text-first hover:bg-third duration-500"
+              onClick={() => {
+                if (token && !user?.data.is_admin) {
+                  navigate("/checkout");
+                } else if (token && user?.data.is_admin) {
+                  alert("You're an admin");
+                } else if (!token) {
+                  alert("Please log in first");
+                  navigate("/login");
+                }
+              }}
+            >
               <div className="flex items-center gap-2">
                 <FaMoneyBill />
                 Buy
@@ -126,10 +141,13 @@ const DetailProductPage = () => {
             <button
               className="bg-first text-third rounded px-4 py-2 hover:text-first hover:bg-third duration-500"
               onClick={() => {
-                if (user?.data?.is_admin) {
-                  alert("You're an admin");
-                } else if (token) {
+                if (token && !user?.data.is_admin) {
                   handleAddToCart(product.id, qty);
+                } else if (token && user?.data.is_admin) {
+                  alert("You're an admin");
+                } else if (!token) {
+                  alert("Please log in first");
+                  navigate("/login");
                 }
               }}
             >
