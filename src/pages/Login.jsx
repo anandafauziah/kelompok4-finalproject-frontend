@@ -14,6 +14,7 @@ function Login() {
   }, []);
 
   const { token } = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,10 +45,10 @@ function Login() {
     await axios
       .post(`${backendURL}/auth/login`, formData)
       .then((response) => {
+        setIsLoginLoading(false);
         const data = response.data;
         dispatch(login({ token: data.access_token, expired: data.expires_in }));
         dispatch(getUser(data.access_token));
-        setIsLoginLoading(false);
         navigate("/");
       })
       .catch((err) => {

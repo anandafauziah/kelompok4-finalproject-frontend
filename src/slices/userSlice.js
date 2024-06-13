@@ -17,20 +17,8 @@ export const getUser = createAsyncThunk("user/getUser", async (_, { getState }) 
   return response.data;
 });
 
-export const updateUser = createAsyncThunk("user/updateUser", async (payload, { getState }) => {
-  const { token } = getState().auth;
-  const { userId, username, name, email, phone } = payload;
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  const response = await axios.put(
-    `${backendURL}/user/${userId}`,
-    { username, name, email, phone },
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    }
-  );
-  return response.data;
+export const deleteUser = createAsyncThunk("user/deleteUser", async (payload) => {
+  return payload;
 });
 
 const userSlice = createSlice({
@@ -68,15 +56,15 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(updateUser.pending, (state) => {
+      .addCase(deleteUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateUser.fulfilled, (state, action) => {
+      .addCase(deleteUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
       })
-      .addCase(updateUser.rejected, (state, action) => {
+      .addCase(deleteUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

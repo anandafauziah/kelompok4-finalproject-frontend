@@ -6,6 +6,7 @@ import { logout } from "../slices/authSlice";
 import { useNavigate } from "react-router";
 import { useLocation } from "react-router";
 import { useState } from "react";
+import { deleteUser } from "../slices/userSlice";
 
 const Navbar = () => {
   const location = useLocation();
@@ -25,9 +26,10 @@ const Navbar = () => {
     const backendURL = import.meta.env.VITE_BACKEND_URL;
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     await axios.post(`${backendURL}/auth/logout`).then((response) => {
-      setLogoutLoading(false);
       dispatch(logout());
+      dispatch(deleteUser({}));
       alert(response.data.message);
+      setLogoutLoading(false);
       navigate("/");
     });
   };
@@ -60,17 +62,6 @@ const Navbar = () => {
             <li>
               <a href="/product">Products</a>
             </li>
-            {/* <li>
-            <a>Category</a>
-            <ul className="p-2">
-              <li>
-                <a>Submenu 1</a>
-              </li>
-              <li>
-                <a>Submenu 2</a>
-              </li>
-            </ul>
-          </li> */}
           </ul>
         </div>
         <div className="navbar hidden lg:flex lg:justify-center">
@@ -85,19 +76,6 @@ const Navbar = () => {
                 Product
               </a>
             </li>
-            {/* <li>
-            <details>
-              <summary>Category</summary>
-              <ul className="px-3">
-                <li>
-                  <a>Jaket</a>
-                </li>
-                <li>
-                  <a>Sepatu</a>
-                </li>
-              </ul>
-            </details>
-          </li> */}
           </ul>
         </div>
         <div className="flex-none gap-x-1">
