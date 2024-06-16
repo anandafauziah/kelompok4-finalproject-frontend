@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { useLocation } from "react-router";
 import { useState } from "react";
 import { deleteUser } from "../slices/userSlice";
+import { setSearchKey } from "../slices/productSlice";
 
 const Navbar = () => {
   const location = useLocation();
@@ -38,6 +39,10 @@ const Navbar = () => {
     return price?.toLocaleString("id-ID", { styles: "currency", currency: "IDR" });
   };
 
+  const handleSearchProduct = (e) => {
+    dispatch(setSearchKey(e.target.value));
+  };
+
   return (
     <>
       {logoutLoading && (
@@ -45,7 +50,7 @@ const Navbar = () => {
           <span className="loading loading-spinner loading-lg md:loading-lg text-second"></span>
         </div>
       )}
-      <div className="navbar flex justify-center px-10 md:px-16 pt-4">
+      <div className={`navbar flex justify-center ${token ? "px-5" : "px-10"} md:px-16 pt-4}`}>
         <a href="/" className="md:scale-100">
           <Logo />
         </a>
@@ -79,6 +84,24 @@ const Navbar = () => {
           </ul>
         </div>
         <div className="flex-none gap-x-1">
+          {location.pathname === "/product" && (
+            <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+                <div className="indicator">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
+              <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
+                <div className="card-body">
+                  <div className="form-control">
+                    <input type="text" placeholder="Search" className="input input-bordered md:w-auto" onChange={handleSearchProduct} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           {token && (
             <>
               {!user?.data?.is_admin && (
@@ -146,27 +169,29 @@ const Navbar = () => {
           )}
         </div>
         {!token && (
-          <ul className="menu menu-xs md:menu-md menu-horizontal z-[1]">
-            <li>
-              <details>
-                <summary>Auth</summary>
-                <ul className="px-3 flex flex-col gap-y-1">
-                  <li>
-                    <a href="/login">
-                      <FaRightFromBracket />
-                      Login
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/register">
-                      <FaUserPlus />
-                      Register
-                    </a>
-                  </li>
-                </ul>
-              </details>
-            </li>
-          </ul>
+          <div className="">
+            <ul className="menu menu-xs md:menu-md menu-horizontal z-[1]">
+              <li>
+                <details>
+                  <summary>Auth</summary>
+                  <ul className="px-3 flex flex-col gap-y-1">
+                    <li>
+                      <a href="/login">
+                        <FaRightFromBracket />
+                        Login
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/register">
+                        <FaUserPlus />
+                        Register
+                      </a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </div>
         )}
       </div>
     </>

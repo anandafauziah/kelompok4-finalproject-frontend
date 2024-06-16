@@ -31,11 +31,16 @@ export const updateProduct = createAsyncThunk("product/updateProduct", async (pa
   return response.data;
 });
 
+export const setSearchKey = createAsyncThunk("product/setSearchKey", async (payload) => {
+  return payload;
+});
+
 const productSlice = createSlice({
   name: "product",
   initialState: {
     products: [],
     product: {},
+    searchKey: "",
     loading: false,
     error: null,
   },
@@ -53,6 +58,10 @@ const productSlice = createSlice({
       .addCase(fetchProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(setSearchKey.fulfilled, (state, action) => {
+        state.loading = false;
+        state.searchKey = action.payload;
       })
       .addCase(getProduct.pending, (state) => {
         state.loading = true;

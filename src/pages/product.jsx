@@ -1,11 +1,11 @@
 import ProductCard from "../components/ProductCard";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchCart } from "../slices/cartSlices";
 import { useDispatch, useSelector } from "react-redux";
 import useLogin from "../hooks/useLogin";
-import { fetchProduct } from "../slices/productSlice";
+import { fetchProduct, setSearchKey } from "../slices/productSlice";
 
 const ProductPage = () => {
   useEffect(() => {
@@ -17,10 +17,21 @@ const ProductPage = () => {
   // Fetch Products
   useEffect(() => {
     dispatch(fetchProduct());
+    dispatch(setSearchKey(""));
   }, []);
 
   const { products, loading } = useSelector((state) => state.product);
+  const { searchKey } = useSelector((state) => state.product);
   const cartLoading = useSelector((state) => state.cart.loading);
+
+  const [searchProducts, setSearchProducts] = useState([]);
+
+  useEffect(() => {
+    if (searchKey && products.length > 0) {
+      const items = products.filter((item) => item.title.toLowerCase().includes(searchKey.toLowerCase()) || item.category.toLowerCase().includes(searchKey.toLowerCase()));
+      setSearchProducts(items);
+    }
+  }, [products, searchKey]);
 
   // Fetch Cart if token exist
   const { token } = useSelector((state) => state.auth);
@@ -45,6 +56,14 @@ const ProductPage = () => {
           <div className="absolute top-1/3 text-lg">
             <span className="loading loading-bars loading-lg text-first"></span>
           </div>
+        ) : searchKey ? (
+          searchProducts?.map((product) => {
+            return (
+              <div key={product.id}>
+                <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
+              </div>
+            );
+          })
         ) : (
           products?.map((product) => {
             return (
