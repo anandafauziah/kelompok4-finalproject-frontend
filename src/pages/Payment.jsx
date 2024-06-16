@@ -1,54 +1,334 @@
-import React from "react";
-import LoginImg from "../img/LoginImg.png";
-import RegisterImg from "../img/RegisterImg.png";
+import React, { useState, useEffect } from "react";
 import icon from "../img/icon.png";
 import dollarIcon from "../img/dollarIcon.png";
 import userIcon from "../img/userIcon.png";
 import cvvIcon from "../img/cvvIcon.png";
 import dateIcon from "../img/dateIcon.png";
-import { useEffect } from "react";
 import useLogin from "../hooks/useLogin";
+import { useDispatch, useSelector } from "react-redux";
+import { getCities, getPostalCode } from "../api";
+import { getUser } from "../slices/userSlice";
+import axios from "axios";
+import { fetchProvince } from "../slices/provinceSlice";
 
-const UserPayment = () => {
+function UserPayment() {
   useEffect(() => {
     document.title = "JO'E Cape | Payment";
   }, []);
 
   useLogin();
 
+  // Fetch Provinces
+  useEffect(() => {
+    dispatch(fetchProvince());
+  }, []);
+
+  const { token } = useSelector((state) => state.auth);
+  const { carts, totalPrice } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.user);
+  const { provinces, loading } = useSelector((state) => state.province);
+
+  const dispatch = useDispatch();
+
+  // Update Address
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCityLoading, setIsCityLoading] = useState(false);
+  const [isPostalCodeLoading, setIsPostalCodeLoading] = useState(false);
+  const [cities, setCities] = useState([]);
+  const [province, setProvince] = useState(user?.address && user?.address.province);
+  const [city, setCity] = useState(user?.address && user?.address.city);
+  const [postalCode, setPostalCode] = useState(user?.address && user?.address.postal_code);
+
+  // Fetch Cities
+  const fetchCities = async (provinceId) => {
+    try {
+      setIsCityLoading(true);
+      const data = await getCities(provinceId);
+      setCities(data);
+      setIsCityLoading(false);
+    } catch (error) {
+      return error;
+    }
+  };
+
+  // Fetch Postal Code
+  const fetchPostalCode = async (cityId) => {
+    try {
+      setIsPostalCodeLoading(true);
+      const data = await getPostalCode(cityId);
+      setPostalCode(data);
+      setIsPostalCodeLoading(false);
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const setProvinceName = (id) => {
+    const province = provinces.find((province) => province.province_id === id);
+    setProvince(province.province);
+  };
+
+  const setCityName = (id) => {
+    const city = cities.find((cities) => cities.city_id === id);
+    setCity(city.type + " " + city.city_name);
+  };
+
+  const handleUpdateAddress = () => {
+    const backendURL = import.meta.env.VITE_BACKEND_URL;
+
+    const formData = new FormData();
+
+    formData.append("province", province);
+    formData.append("city", city);
+    formData.append("postal_code", postalCode);
+
+    setIsLoading(true);
+
+    axios
+      .post(`${backendURL}/user/updateAddress/${user?.data.id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        dispatch(getUser(token));
+        alert(response.data.message);
+        document.getElementById("addressModal").close();
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
+  };
+
+  // Order States
+  const [orderItems, setOrderItems] = useState([]);
+  const [couriers] = useState([
+    {
+      name: "JNE",
+      value: "jne",
+    },
+    {
+      name: "POS Indonesia",
+      value: "pos",
+    },
+    {
+      name: "TIKI",
+      value: "tiki",
+    },
+  ]);
+  const [shippingFee, setShippingFee] = useState(0);
+  const [weight, setWeight] = useState(0);
+  const [total, setTotal] = useState(shippingFee + totalPrice);
+  const [origin, setOrigin] = useState("501");
+  const [destination, setDestination] = useState("");
+  const [destinationLoading, setIsDestinationLoading] = useState(false);
+  const [services, setServices] = useState([]);
+  const [isServiceLoading, setIsServiceLoading] = useState(false);
+
+  // Set Order Items
+  useEffect(() => {
+    if (carts?.length > 0) {
+      const items = carts.map((item) => ({
+        productId: item.cart_items[0].product.id,
+        quantity: item.cart_items[0].quantity,
+      }));
+      setOrderItems(items);
+    }
+  }, [carts]);
+
+  // Set Weight
+  useEffect(() => {
+    if (carts?.length > 0) {
+      const weight = carts.map((item) => item.cart_items[0].product.weight * item.cart_items[0].quantity).reduce((acc, item) => acc + item);
+      setWeight(weight);
+    }
+  }, [carts]);
+
+  // Find City Destination ID
+  useEffect(() => {
+    setIsDestinationLoading(true);
+    if (provinces?.length > 0) {
+      const userProvince = provinces?.find((item) => item.province === province);
+      getCities(userProvince.province_id).then((result) => {
+        const userCity = result.find((item) => item.city_name === city.split(" ").slice(1).join(" "));
+        setDestination(userCity.city_id);
+        setIsDestinationLoading(false);
+      });
+    }
+  }, [provinces]);
+
+  const handleCreateOrder = async () => {
+    await dispatch(createOrder({ items: orderItems, user, amount: totalPrice }, token))
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  };
+
+  const handleGetServices = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append("courier", e.target.value);
+    formData.append("weight", weight);
+    formData.append("destination", destination);
+    formData.append("origin", origin);
+
+    const backendURL = import.meta.env.VITE_BACKEND_URL;
+
+    axios
+      .post(`${backendURL}/getServices`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => console.log(res.data));
+  };
+
+  const indoCurrency = (price) => {
+    return price?.toLocaleString("id-ID", { styles: "currency", currency: "IDR" });
+  };
+
   return (
-    <div className="bg-gray-100 min-h-screen md:p-8">
-      <div className="flex-col md:flex-row max-w-4xl mx-auto bg-white shadow-md rounded-md p-4 flex md:space-x-8">
-        {/* Bagian Kiri: Checkout Form */}
-        <div className="md:flex-1 mt-0 md:space-y-8">
-          <h1 className="text-4xl font-bold mt-0 text-[#322C2B]">Checkout</h1>
-
-          <div className="p-2 block border-2 border-[#AF8260] rounded">
-            <div className="flex justify-between p-2 tracking-tight">
-              <span className="font-semibold text-gray-400 text-md">Contact</span>
-              <span className="font-medium text-md">Taylor Swift</span>
-              <button className="font-semibold text-[#AF8260] hover:text-[#322C2B]">Edit</button>
+    <div className="min-h-screen bg-second flex items-center p-5">
+      <div className="md:p-10 mx-auto bg-white shadow-md rounded-md p-4">
+        <h1 className="text-4xl font-bold text-[#322C2B] mb-3 md:mb-0">Checkout</h1>
+        <div className="flex-col md:flex-row items-center gap-3 flex md:space-x-8">
+          {/* Bagian Kiri: Checkout Form */}
+          <div className="md:flex-1 mt-0 md:space-y-8">
+            <div className="p-2 block border-2 border-[#AF8260] rounded">
+              <div className="flex p-2 tracking-tight">
+                <span className="font-semibold text-gray-400 text-md">Contact</span>
+                <span className="font-medium text-md mx-auto">{user?.data.name}</span>
+              </div>
+              <div className="flex border-b border-[#AF8260]"></div>
+              <div className="flex justify-between p-2 tracking-tight">
+                <span className="font-semibold text-gray-400 text-md">Ship to</span>
+                <span className="font-medium text-md text-[#322C2B]">
+                  {province || ""}, {city || ""}, {postalCode || ""}
+                </span>
+                <button className="font-semibold text-[#AF8260] hover:text-[#322C2B]" onClick={() => document.getElementById("addressModal").showModal()}>
+                  Edit
+                </button>
+              </div>
             </div>
-            <div className="flex border-b border-[#AF8260]"></div>
-            <div className="flex justify-between p-2 tracking-tight">
-              <span className="font-semibold text-gray-400 text-md">Ship to</span>
-              <span className="font-medium text-md text-[#322C2B]">Via Firenze 23, 92023, Italia</span>
-              <button className="font-semibold text-[#AF8260] hover:text-[#322C2B]">Edit</button>
+
+            {/* Update Address Modal */}
+            <dialog id="addressModal" className="modal">
+              <div className="modal-box">
+                <h3 className="font-bold text-lg">Change Address</h3>
+                {isLoading && (
+                  <div className="mx-auto text-center mt-2">
+                    <span className="loading loading-spinner loading-lg text-second"></span>
+                  </div>
+                )}
+                <div className="modal-action flex flex-col gap-y-4">
+                  <div className="mb-2">
+                    <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">Province</label>
+                    <select
+                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      onChange={(e) => {
+                        fetchCities(e.target.value);
+                        setProvinceName(e.target.value);
+                      }}
+                    >
+                      <option selected disabled>
+                        Choose Province
+                      </option>
+                      {loading ? (
+                        <option>Loading...</option>
+                      ) : (
+                        provinces?.map((province, idx) => {
+                          return (
+                            <option key={idx} className="text-sm" value={province.province_id}>
+                              {province.province}
+                            </option>
+                          );
+                        })
+                      )}
+                    </select>
+                  </div>
+                  <div className="mb-2">
+                    <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">Province</label>
+                    <select
+                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      onChange={(e) => {
+                        fetchPostalCode(e.target.value);
+                        setCityName(e.target.value);
+                      }}
+                    >
+                      <option selected disabled>
+                        Choose City
+                      </option>
+                      {isCityLoading ? (
+                        <option>Loading...</option>
+                      ) : (
+                        cities?.map((city, idx) => {
+                          return (
+                            <option key={idx} value={city.city_id}>
+                              {city.type} {city.city_name}
+                            </option>
+                          );
+                        })
+                      )}
+                    </select>
+                  </div>
+                  <div className="mb-2">
+                    <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">Province</label>
+                    <select className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                      {isPostalCodeLoading ? <option>Loading...</option> : <option value={postalCode}>{postalCode}</option>}
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-x-3 mt-3">
+                    <button
+                      className="btn btn-success text-white w-1/2"
+                      type="button"
+                      disabled={isPostalCodeLoading || loading || isCityLoading ? true : false}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (confirm("Save address?")) {
+                          handleUpdateAddress();
+                        }
+                      }}
+                    >
+                      Save
+                    </button>
+                    <button type="button" className="btn bg-slate-300 w-1/2" onClick={() => document.getElementById("addressModal").close()}>
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </dialog>
+
+            <div className="py-2 flex gap-2">
+              <select className="select bg-[#AF8260] w-full py-2 rounded-md text-white font-medium max-w-xs text-base focus:outline-none" disabled={(destinationLoading && true) || false} onChange={handleGetServices}>
+                <option disabled selected>
+                  Choose Your Shipping
+                </option>
+                {couriers.map((item, i) => {
+                  return (
+                    <option key={i} value={item.value}>
+                      {item.name}
+                    </option>
+                  );
+                })}
+              </select>
+              <select className="select bg-[#AF8260] w-full py-2 rounded-md text-white font-medium max-w-xs text-base focus:outline-none" onChange={""}>
+                <option disabled selected>
+                  Choose Your Services
+                </option>
+                {services?.map((item, i) => {
+                  return (
+                    <option key={i} value={item.value}>
+                      {item.name}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
-          </div>
 
-          <div className="py-2 justify-start">
-            <select className="select bg-[#AF8260] w-full py-2 rounded-md text-white font-medium max-w-xs text-base focus:outline-none">
-              <option disabled selected>
-                Choose Your Shipping
-              </option>
-              <option>JNE Reguler</option>
-              <option>POS Indonesia</option>
-              <option>Si Cepat Express</option>
-            </select>
-          </div>
-
-          <div className="mb-2 space-y-4">
+            {/* <div className="mb-2 space-y-4">
             <h2 className="text-xl font-bold mb-0 text-[#322C2B]">Payment Methods</h2>
             <div className="flex gap-8 mb-4">
               <div>
@@ -95,70 +375,63 @@ const UserPayment = () => {
                 </div>
               </div>
             </div>
+          </div> */}
           </div>
 
-          <div className="flex justify-between items-center mt-4">
-            <a href="/cart" className="text-[#AF8260] hover:text-[#322C2B] hover:underline focus:underline focus:text-[#322C2B]">
-              <span className="text-lg font-normal">Back to Cart</span>
-            </a>
-            <button className="bg-[#322C2B] text-white py-2 px-6 rounded focus:bg-[#322C2B] hover:bg-[#4d4746] focus:text-white">
-              <span className="text-lg font-semibold">Pay Now</span>
-            </button>
-          </div>
-        </div>
+          {/* Bagian Kanan: Order Details */}
+          <div className="sm:max-w-xs w-full sm:pt-16">
+            <div className="bg-[#AF8260] shadow-md rounded-md p-4 sm:space-y-6 ">
+              <h2 className="text-xl font-bold text-white mb-2">Order Details</h2>
 
-        {/* Bagian Kanan: Order Details */}
-        <div className="sm:max-w-xs w-full sm:pt-16">
-          <div className="bg-[#AF8260] shadow-md rounded-md p-4 sm:space-y-6 ">
-            <h2 className="text-xl font-bold text-white">Order Details</h2>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <img src={LoginImg} alt="Puma T-Shirt" className="w-16 h-16 mr-4" />
-                <div>
-                  <p className="font-medium text-[#322C2B]">Puma T-Shirt</p>
-                  <p className="text-sm text-white">Size M</p>
-                </div>
-              </div>
-              <p className="font-medium text-white">Rp 40.000</p>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <img src={RegisterImg} alt="Puma T-Shirt" className="w-16 h-16 mr-4" />
-                <div>
-                  <p className="font-medium text-[#322C2B]">Puma T-Shirt</p>
-                  <p className="text-sm text-white">Size M</p>
-                </div>
-              </div>
-              <p className="font-medium text-white">Rp 40.000</p>
-            </div>
-
-            <div className="border-t pt-4">
-              <div className="flex">
+              {carts.length > 0 &&
+                carts.map((item, idx) => {
+                  return (
+                    <div className="flex items-center gap-2 justify-between" key={idx}>
+                      <div className="flex items-center">
+                        <img src={item.cart_items[0].product.image} alt={item.cart_items[0].product.title} className="w-16 h-16 mr-4" />
+                        <div>
+                          <p className="font-medium text-[#322C2B] text-sm md:text-md">{item.cart_items[0].product.title}</p>
+                          <p className="text-xs md:text-sm text-white">Size {item.cart_items[0].product.size}</p>
+                        </div>
+                      </div>
+                      <p className="font-medium text-white text-xs md:text-sm">Rp{indoCurrency(item.cart_items[0].product.price)}</p>
+                    </div>
+                  );
+                })}
+              <div className="border-t py-4 mt-2">
+                {/* <div className="flex">
                 <input type="text" placeholder="Coupon Code" className="input h-8 text-sm focus:ring-2 focus:ring-[#322C2B] focus:outline-none focus:border-none rounded-none w-full py-1 px-3 mb-4 " />
                 <button className="min-w-20 ms-2 h-8 bg-[#322C2B] rounded focus:bg-[#322C2B] hover:bg-[#4d4746] focus:text-white">
                   <span className="text-white p-1 text-sm">Add code</span>
                 </button>
-              </div>
-              <div className="flex justify-between mb-2 text-gray-600">
-                <p className="font-semibold">Subtotal</p>
-                <p className="text-md font-semibold">Rp 80.000</p>
-              </div>
-              <div className="flex justify-between mb-2 text-gray-600">
-                <p className="font-semibold">Shipping</p>
-                <p className="text-md font-semibold">Rp 8.000</p>
-              </div>
-              <div className="flex justify-between mb-4">
-                <p className="text-[#322C2B] font-bold">Total</p>
-                <p className="text-md font-bold text-[#322C2B]">Rp 88.000</p>
+              </div> */}
+                <div className="flex justify-between mb-2 text-slate-200">
+                  <p className="font-semibold">Subtotal</p>
+                  <p className="text-md font-semibold">Rp{indoCurrency(totalPrice)}</p>
+                </div>
+                <div className="flex justify-between mb-2 text-slate-200">
+                  <p className="font-semibold">Shipping</p>
+                  <p className="text-md font-semibold">Rp{indoCurrency(shippingFee)}</p>
+                </div>
+                <div className="flex justify-between mb-4">
+                  <p className="text-[#322C2B] font-bold">Total</p>
+                  <p className="text-md font-bold text-[#322C2B]">Rp{indoCurrency(total)}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <div className="flex gap-10 mt-5 md:mt-0 items-center">
+          <a href="/cart" className="text-[#AF8260] hover:text-[#322C2B] hover:underline focus:underline focus:text-[#322C2B]">
+            <span className="text-lg font-normal">Back to Cart</span>
+          </a>
+          <button className="bg-[#322C2B] text-white py-2 px-6 rounded focus:bg-[#322C2B] hover:bg-[#4d4746] focus:text-white">
+            <span className="text-lg font-semibold">Pay Now</span>
+          </button>
+        </div>
       </div>
     </div>
   );
-};
+}
 
 export default UserPayment;

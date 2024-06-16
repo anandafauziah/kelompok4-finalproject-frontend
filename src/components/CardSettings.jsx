@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { getUser } from "../slices/userSlice";
-import { getCities, getPostalCode, getProvinces } from "../api";
+import { getCities, getPostalCode } from "../api";
 
 function CardSettings() {
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.user);
+  const { provinces, loading } = useSelector((state) => state.province);
 
   const dispatch = useDispatch();
 
@@ -24,26 +25,10 @@ function CardSettings() {
   };
 
   // Fetch Regions
-  const [isProvinceLoading, setIsProvinceLoading] = useState(false);
   const [isCityLoading, setIsCityLoading] = useState(false);
   const [isPostalCodeLoading, setIsPostalCodeLoading] = useState(false);
-  const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
   const [postalCode, setPostalCode] = useState(user?.address && user?.address.postal_code);
-
-  useEffect(() => {
-    const fetchProvinces = async () => {
-      try {
-        setIsProvinceLoading(true);
-        const data = await getProvinces();
-        setProvinces(data);
-        setIsProvinceLoading(false);
-      } catch (error) {
-        return error;
-      }
-    };
-    fetchProvinces();
-  }, []);
 
   // Fetch Cities
   const fetchCities = async (provinceId) => {
@@ -380,7 +365,7 @@ function CardSettings() {
                     <option selected disabled>
                       Choose Province
                     </option>
-                    {isProvinceLoading ? (
+                    {loading ? (
                       <option>Loading...</option>
                     ) : (
                       provinces?.map((province, idx) => {
@@ -428,13 +413,7 @@ function CardSettings() {
                   <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="grid-password">
                     Postal Code
                   </label>
-                  <select
-                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    onChange={(e) => {
-                      fetchPostalCode(e.target.value);
-                      setCityName(e.target.value);
-                    }}
-                  >
+                  <select className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
                     {isPostalCodeLoading ? <option>Loading...</option> : <option value={postalCode}>{postalCode}</option>}
                   </select>
                 </div>

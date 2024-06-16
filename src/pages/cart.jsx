@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCart, updateCart, removeFromCart } from "../slices/cartSlices";
 import useLogin from "../hooks/useLogin";
 import { useNavigate } from "react-router";
+import { createOrder, fetchOrder } from "../slices/orderSlice";
 
 const Cart = () => {
   useEffect(() => {
@@ -16,12 +17,14 @@ const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { token } = useSelector((state) => state.auth);
+
   // Fetch Cart
   useEffect(() => {
     dispatch(fetchCart(token));
   }, [dispatch]);
 
-  const { token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
 
   const { carts, loading, totalPrice } = useSelector((state) => state.cart);
 
@@ -29,7 +32,7 @@ const Cart = () => {
     try {
       dispatch(updateCart({ cartId, productId, quantity }, token)).then(() => dispatch(fetchCart(token)));
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 
@@ -37,7 +40,7 @@ const Cart = () => {
     try {
       dispatch(removeFromCart({ cartId, productId }, token)).then(() => dispatch(fetchCart(token)));
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 
@@ -141,7 +144,18 @@ const Cart = () => {
           {!loading && carts?.length > 0 && (
             <>
               <h2 className="text-first mr-5 font-semibold">Total: Rp{indoCurrency(totalPrice) || 0},00</h2>
-              <button className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third" onClick={() => navigate("/checkout")}>
+              <button
+                className="px-3 py-1 rounded duration-500 text-third bg-first hover:text-first hover:bg-third"
+                onClick={() => {
+                  if (!user?.address) {
+                    alert("Please update your address first!");
+                    navigate("/profile");
+                  } else {
+                    // handleCreateOrder();
+                    navigate("/checkout");
+                  }
+                }}
+              >
                 Checkout
               </button>
             </>
