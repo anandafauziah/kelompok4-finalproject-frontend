@@ -11,19 +11,6 @@ function CardSettings() {
 
   const dispatch = useDispatch();
 
-  const [profileImage, setProfileImage] = useState(null);
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   // Fetch Regions
   const [isCityLoading, setIsCityLoading] = useState(false);
   const [isPostalCodeLoading, setIsPostalCodeLoading] = useState(false);
@@ -65,6 +52,8 @@ function CardSettings() {
   };
 
   // User Data States
+  const [avatar, setAvatar] = useState(user?.data.avatar);
+  const [updateAvatarLoading, setUpdateAvatarLoading] = useState(false);
   const [name, setName] = useState(user?.data.name);
   const [username, setUsername] = useState(user?.data.username);
   const [email, setEmail] = useState(user?.data.email);
@@ -73,6 +62,41 @@ function CardSettings() {
   const [city, setCity] = useState(user?.address && user?.address.city);
   const [addressLine, setAddressLine] = useState(user?.address && user?.address.address_line);
   const [updateValidation, setUpdateValidation] = useState([]);
+  const [profileImage, setProfileImage] = useState(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    const data = new FormData();
+
+    data.append("avatar", file);
+
+    const backendURL = import.meta.env.VITE_BACKEND_URL;
+
+    setUpdateAvatarLoading(true);
+
+    axios
+      .post(`${backendURL}/user/updateAvatar/${user?.data.id}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setAvatar(res.data.avatar);
+        dispatch(getUser(token));
+        alert(res.data.message);
+        setUpdateAvatarLoading(false);
+      })
+      .catch((err) => console.log(err.response.data));
+  };
 
   const handleUpdateUser = async () => {
     const backendURL = import.meta.env.VITE_BACKEND_URL;
@@ -90,7 +114,7 @@ function CardSettings() {
 
     setIsLoading(true);
 
-    await axios
+    axios
       .put(`${backendURL}/user/${user?.data.id}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -148,7 +172,12 @@ function CardSettings() {
   return (
     <>
       {isLoading && (
-        <div className="absolute top-32 left-1/2">
+        <div className="fixed top-32 left-1/2 z-[9999]">
+          <span className="loading loading-spinner loading-lg text-first"></span>
+        </div>
+      )}
+      {updateAvatarLoading && (
+        <div className="fixed top-32 left-1/2 z-[9999]">
           <span className="loading loading-spinner loading-lg text-first"></span>
         </div>
       )}
@@ -168,8 +197,8 @@ function CardSettings() {
                   <input type="file" accept="image/*" className="hidden" id="profile-image" onChange={handleImageChange} />
                   <div className="flex justify-center mt-2">
                     <label htmlFor="profile-image" className="cursor-pointer">
-                      {profileImage ? (
-                        <img src={profileImage} alt="Profile" className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover" />
+                      {avatar ? (
+                        <img src={avatar} className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover" />
                       ) : (
                         <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg flex items-center justify-center bg-gray-200 text-blueGray-300">Upload Image</div>
                       )}
