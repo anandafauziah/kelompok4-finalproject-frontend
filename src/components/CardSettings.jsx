@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { getUser } from "../slices/userSlice";
-import { getCities, getPostalCode, getProvinces } from "../api";
+import { getCities, getPostalCode } from "../api";
 
 function CardSettings() {
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.user);
+  const { provinces, loading } = useSelector((state) => state.province);
 
   const dispatch = useDispatch();
 
@@ -27,23 +28,8 @@ function CardSettings() {
   const [isProvinceLoading, setIsProvinceLoading] = useState(false);
   const [isCityLoading, setIsCityLoading] = useState(false);
   const [isPostalCodeLoading, setIsPostalCodeLoading] = useState(false);
-  const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
   const [postalCode, setPostalCode] = useState(user?.address && user?.address.postal_code);
-
-  useEffect(() => {
-    const fetchProvinces = async () => {
-      try {
-        setIsProvinceLoading(true);
-        const data = await getProvinces();
-        setProvinces(data);
-        setIsProvinceLoading(false);
-      } catch (error) {
-        return error;
-      }
-    };
-    fetchProvinces();
-  }, []);
 
   // Fetch Cities
   const fetchCities = async (provinceId) => {
@@ -380,7 +366,7 @@ function CardSettings() {
                     <option selected disabled>
                       Choose Province
                     </option>
-                    {isProvinceLoading ? (
+                    {loading ? (
                       <option>Loading...</option>
                     ) : (
                       provinces?.map((province, idx) => {

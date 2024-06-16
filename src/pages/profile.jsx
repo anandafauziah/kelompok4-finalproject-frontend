@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import useLogin from "../hooks/useLogin";
 import { getUser } from "../slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchProvince } from "../slices/provinceSlice";
 
 const UserProfile = () => {
   useEffect(() => {
@@ -22,6 +23,10 @@ const UserProfile = () => {
       dispatch(getUser(token));
     }
   }, [token]);
+
+  useEffect(() => {
+    dispatch(fetchProvince());
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
