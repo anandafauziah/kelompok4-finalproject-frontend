@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   token: null,
-  expired: null,
+  expired: 0,
 };
 
 const authSlice = createSlice({
@@ -16,10 +16,15 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.token = null;
-      state.expired = null;
+      state.expired = 0;
+    },
+    refresh: (state) => {
+      const { token, expired } = action.payload;
+      state.token = token;
+      state.expired = 0;
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, refresh } = authSlice.actions;
 export default authSlice.reducer;

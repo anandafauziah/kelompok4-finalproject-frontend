@@ -26,13 +26,19 @@ const Navbar = () => {
     setLogoutLoading(true);
     const backendURL = import.meta.env.VITE_BACKEND_URL;
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    await axios.post(`${backendURL}/auth/logout`).then((response) => {
-      dispatch(logout());
-      dispatch(deleteUser({}));
-      alert(response.data.message);
-      setLogoutLoading(false);
-      navigate("/");
-    });
+    await axios
+      .post(`${backendURL}/auth/logout`)
+      .then((response) => {
+        dispatch(logout());
+        dispatch(deleteUser({}));
+        alert(response.data.message);
+        setLogoutLoading(false);
+        navigate("/");
+      })
+      .catch((err) => {
+        setLogoutLoading(false);
+        return err.response.data;
+      });
   };
 
   const indoCurrency = (price) => {
@@ -47,7 +53,7 @@ const Navbar = () => {
     <>
       {logoutLoading && (
         <div className="absolute top-28 left-5 md:left-1/2">
-          <span className="loading loading-spinner loading-lg md:loading-lg text-second"></span>
+          <span className="loading loading-spinner loading-lg md:loading-lg text-first"></span>
         </div>
       )}
       <div className={`navbar flex justify-center ${token ? "px-5" : "px-10"} md:px-16 pt-4}`}>

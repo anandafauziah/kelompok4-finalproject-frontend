@@ -15,14 +15,14 @@ function Login() {
 
   const { token } = useSelector((state) => state.auth);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   useEffect(() => {
     if (token) {
       navigate("/");
     }
   }, [token]);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,9 +46,8 @@ function Login() {
       .post(`${backendURL}/auth/login`, formData)
       .then((response) => {
         setIsLoginLoading(false);
-        const data = response.data;
-        dispatch(login({ token: data.access_token, expired: data.expires_in }));
-        dispatch(getUser(data.access_token));
+        dispatch(login({ token: response.data.access_token, expired: response.data.expires_in }));
+        dispatch(getUser(response.data.access_token));
         navigate("/");
       })
       .catch((err) => {

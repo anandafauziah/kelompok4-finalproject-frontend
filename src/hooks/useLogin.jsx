@@ -9,7 +9,7 @@ function useLogin() {
   useEffect(() => {
     if (token) {
       const interval = setInterval(() => {
-        if (expired > 0 || expired != null) {
+        if (expired > 0) {
           dispatch(login({ token, expired: expired - 1 }));
         }
       }, 1000);
@@ -20,12 +20,12 @@ function useLogin() {
 
   useEffect(() => {
     if (token) {
-      if (expired <= 0 || expired == null) {
+      if (expired <= 0) {
         alert("Login expired, please log in again!");
         dispatch(logout());
       }
     }
-  }, [expired, dispatch]);
+  }, [token, expired, dispatch]);
 
   return null;
 }

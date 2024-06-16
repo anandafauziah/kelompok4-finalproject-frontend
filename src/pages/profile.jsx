@@ -24,6 +24,7 @@ const UserProfile = () => {
     }
   }, [token]);
 
+  // Fetch Provinces
   useEffect(() => {
     dispatch(fetchProvince());
   }, []);

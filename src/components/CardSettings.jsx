@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { getUser } from "../slices/userSlice";
@@ -25,7 +25,6 @@ function CardSettings() {
   };
 
   // Fetch Regions
-  const [isProvinceLoading, setIsProvinceLoading] = useState(false);
   const [isCityLoading, setIsCityLoading] = useState(false);
   const [isPostalCodeLoading, setIsPostalCodeLoading] = useState(false);
   const [cities, setCities] = useState([]);
@@ -414,13 +413,7 @@ function CardSettings() {
                   <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="grid-password">
                     Postal Code
                   </label>
-                  <select
-                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    onChange={(e) => {
-                      fetchPostalCode(e.target.value);
-                      setCityName(e.target.value);
-                    }}
-                  >
+                  <select className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
                     {isPostalCodeLoading ? <option>Loading...</option> : <option value={postalCode}>{postalCode}</option>}
                   </select>
                 </div>
