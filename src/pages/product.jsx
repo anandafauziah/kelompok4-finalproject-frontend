@@ -14,13 +14,16 @@ const ProductPage = () => {
 
   useLogin();
 
+  const { products, loading } = useSelector((state) => state.product);
+
   // Fetch Products
   useEffect(() => {
-    dispatch(fetchProduct());
+    if (!products) {
+      dispatch(fetchProduct());
+    }
     dispatch(setSearchKey(""));
   }, []);
 
-  const { products, loading } = useSelector((state) => state.product);
   const { searchKey } = useSelector((state) => state.product);
   const cartLoading = useSelector((state) => state.cart.loading);
 

@@ -7,7 +7,7 @@ import dateIcon from "../img/dateIcon.png";
 import useLogin from "../hooks/useLogin";
 import { useDispatch, useSelector } from "react-redux";
 import { getCities, getPostalCode } from "../api";
-import { getUser } from "../slices/userSlice";
+import { getAdmin, getUser } from "../slices/userSlice";
 import axios from "axios";
 import { fetchProvince } from "../slices/provinceSlice";
 
@@ -18,17 +18,28 @@ function UserPayment() {
 
   useLogin();
 
-  // Fetch Provinces
-  useEffect(() => {
-    dispatch(fetchProvince());
-  }, []);
-
   const { token } = useSelector((state) => state.auth);
   const { carts, totalPrice } = useSelector((state) => state.cart);
-  const { user } = useSelector((state) => state.user);
+  const { user, admin } = useSelector((state) => state.user);
   const { provinces, loading } = useSelector((state) => state.province);
 
   const dispatch = useDispatch();
+
+  // Fetch Admin Data
+  useEffect(() => {
+    dispatch(getAdmin(token));
+  }, []);
+
+  // Admin States
+  const [adminProvince, setAdminProvince] = useState(admin?.address && admin?.address.province);
+  const [adminCity, setAdminCity] = useState(admin?.address && admin?.address.city);
+
+  // Fetch Provinces
+  useEffect(() => {
+    if (!provinces) {
+      dispatch(fetchProvince());
+    }
+  }, []);
 
   // Update Address
   const [isLoading, setIsLoading] = useState(false);
@@ -94,6 +105,7 @@ function UserPayment() {
         dispatch(getUser(token));
         alert(response.data.message);
         document.getElementById("addressModal").close();
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
@@ -117,12 +129,12 @@ function UserPayment() {
       value: "tiki",
     },
   ]);
+  const [total, setTotal] = useState(totalPrice);
   const [shippingFee, setShippingFee] = useState(0);
   const [weight, setWeight] = useState(0);
-  const [total, setTotal] = useState(shippingFee + totalPrice);
-  const [origin, setOrigin] = useState("501");
+  const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
-  const [destinationLoading, setIsDestinationLoading] = useState(false);
+  const [regionIdLoading, setIsRegionLoading] = useState(false);
   const [services, setServices] = useState([]);
   const [isServiceLoading, setIsServiceLoading] = useState(false);
 
@@ -145,24 +157,28 @@ function UserPayment() {
     }
   }, [carts]);
 
-  // Find City Destination ID
+  // Find City ID
   useEffect(() => {
-    setIsDestinationLoading(true);
+    setIsServiceLoading(true);
+    setIsRegionLoading(true);
     if (provinces?.length > 0) {
+      // Origin ID
+      const prov = provinces?.find((item) => item.province === adminProvince);
+      getCities(prov?.province_id).then((result) => {
+        const cit = result.find((item) => item.type === adminCity.split(" ")[0] && item.city_name === adminCity.split(" ").slice(1).join(" "));
+        setOrigin(cit.city_id);
+      });
+
+      // Destination ID
       const userProvince = provinces?.find((item) => item.province === province);
-      getCities(userProvince.province_id).then((result) => {
-        const userCity = result.find((item) => item.city_name === city.split(" ").slice(1).join(" "));
+      getCities(userProvince?.province_id).then((result) => {
+        const userCity = result.find((item) => item.type === city.split(" ")[0] && item.city_name === city.split(" ").slice(1).join(" "));
         setDestination(userCity.city_id);
-        setIsDestinationLoading(false);
+        setIsRegionLoading(false);
+        setIsLoading(false);
       });
     }
   }, [provinces]);
-
-  const handleCreateOrder = async () => {
-    await dispatch(createOrder({ items: orderItems, user, amount: totalPrice }, token))
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
-  };
 
   const handleGetServices = (e) => {
     e.preventDefault();
@@ -176,13 +192,26 @@ function UserPayment() {
 
     const backendURL = import.meta.env.VITE_BACKEND_URL;
 
+    setIsServiceLoading(true);
+
     axios
       .post(`${backendURL}/getServices`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => console.log(res.data));
+      .then((res) => {
+        const data = res.data[0].costs;
+        setServices(data);
+        setIsServiceLoading(false);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleCreateOrder = async () => {
+    await dispatch(createOrder({ items: orderItems, user, amount: totalPrice }, token))
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
 
   const indoCurrency = (price) => {
@@ -191,18 +220,23 @@ function UserPayment() {
 
   return (
     <div className="min-h-screen bg-second flex items-center p-5">
+      {isLoading && (
+        <div className="fixed top-24 left-1/2 z-[99999]">
+          <span className="loading loading-spinner loading-lg text-first"></span>
+        </div>
+      )}
       <div className="md:p-10 mx-auto bg-white shadow-md rounded-md p-4">
         <h1 className="text-4xl font-bold text-[#322C2B] mb-3 md:mb-0">Checkout</h1>
         <div className="flex-col md:flex-row items-center gap-3 flex md:space-x-8">
           {/* Bagian Kiri: Checkout Form */}
           <div className="md:flex-1 mt-0 md:space-y-8">
             <div className="p-2 block border-2 border-[#AF8260] rounded">
-              <div className="flex p-2 tracking-tight">
+              <div className="flex p-2 gap-x-3 tracking-tight">
                 <span className="font-semibold text-gray-400 text-md">Contact</span>
                 <span className="font-medium text-md mx-auto">{user?.data.name}</span>
               </div>
               <div className="flex border-b border-[#AF8260]"></div>
-              <div className="flex justify-between p-2 tracking-tight">
+              <div className="flex justify-between p-2 gap-x-3 tracking-tight">
                 <span className="font-semibold text-gray-400 text-md">Ship to</span>
                 <span className="font-medium text-md text-[#322C2B]">
                   {province || ""}, {city || ""}, {postalCode || ""}
@@ -302,7 +336,12 @@ function UserPayment() {
             </dialog>
 
             <div className="py-2 flex gap-2">
-              <select className="select bg-[#AF8260] w-full py-2 rounded-md text-white font-medium max-w-xs text-base focus:outline-none" disabled={(destinationLoading && true) || false} onChange={handleGetServices}>
+              <select
+                className="select bg-[#AF8260] w-full py-2 rounded-md text-white font-medium max-w-xs text-base focus:outline-none"
+                disabled={regionIdLoading ? true : false || isLoading ? true : false}
+                onChange={handleGetServices}
+                required
+              >
                 <option disabled selected>
                   Choose Your Shipping
                 </option>
@@ -314,20 +353,28 @@ function UserPayment() {
                   );
                 })}
               </select>
-              <select className="select bg-[#AF8260] w-full py-2 rounded-md text-white font-medium max-w-xs text-base focus:outline-none" onChange={""}>
+
+              <select
+                className="select bg-[#AF8260] w-full py-2 rounded-md text-white font-medium max-w-xs text-base focus:outline-none"
+                onChange={(e) => {
+                  setShippingFee(e.target.value);
+                  setTotal(parseFloat(e.target.value) + totalPrice);
+                }}
+                disabled={isServiceLoading ? true : false}
+                required
+              >
                 <option disabled selected>
                   Choose Your Services
                 </option>
                 {services?.map((item, i) => {
                   return (
-                    <option key={i} value={item.value}>
-                      {item.name}
+                    <option key={i} value={item.cost[0].value}>
+                      {item.service} ({item.description}) - Rp{indoCurrency(item.cost[0].value)},00 - {item.cost[0].etd} hari
                     </option>
                   );
                 })}
               </select>
             </div>
-
             {/* <div className="mb-2 space-y-4">
             <h2 className="text-xl font-bold mb-0 text-[#322C2B]">Payment Methods</h2>
             <div className="flex gap-8 mb-4">
@@ -386,7 +433,7 @@ function UserPayment() {
               {carts.length > 0 &&
                 carts.map((item, idx) => {
                   return (
-                    <div className="flex items-center gap-2 justify-between" key={idx}>
+                    <div className="flex items-center justify-between" key={idx}>
                       <div className="flex items-center">
                         <img src={item.cart_items[0].product.image} alt={item.cart_items[0].product.title} className="w-16 h-16 mr-4" />
                         <div>
@@ -394,7 +441,9 @@ function UserPayment() {
                           <p className="text-xs md:text-sm text-white">Size {item.cart_items[0].product.size}</p>
                         </div>
                       </div>
-                      <p className="font-medium text-white text-xs md:text-sm">Rp{indoCurrency(item.cart_items[0].product.price)}</p>
+                      <p className="font-medium text-white text-xs w-1/3">
+                        {item.cart_items[0].quantity}x Rp{indoCurrency(item.cart_items[0].product.price)}
+                      </p>
                     </div>
                   );
                 })}
@@ -411,11 +460,11 @@ function UserPayment() {
                 </div>
                 <div className="flex justify-between mb-2 text-slate-200">
                   <p className="font-semibold">Shipping</p>
-                  <p className="text-md font-semibold">Rp{indoCurrency(shippingFee)}</p>
+                  <p className="text-md font-semibold">Rp{indoCurrency(parseFloat(shippingFee))}</p>
                 </div>
                 <div className="flex justify-between mb-4">
                   <p className="text-[#322C2B] font-bold">Total</p>
-                  <p className="text-md font-bold text-[#322C2B]">Rp{indoCurrency(total)}</p>
+                  <p className="text-md font-bold text-[#322C2B]">Rp{indoCurrency(total)},00</p>
                 </div>
               </div>
             </div>

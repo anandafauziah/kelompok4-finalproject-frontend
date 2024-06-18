@@ -3,9 +3,7 @@ import axios from "axios";
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
-export const fetchUser = createAsyncThunk("user/fetchUser", async (_, { getState }) => {
-  const { token } = getState().auth;
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
   const response = await axios.get(`${backendURL}/user`);
   return response.data;
 });
@@ -14,6 +12,13 @@ export const getUser = createAsyncThunk("user/getUser", async (_, { getState }) 
   const { token } = getState().auth;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   const response = await axios.get(`${backendURL}/getUser`);
+  return response.data;
+});
+
+export const getAdmin = createAsyncThunk("user/getAdmin", async (_, { getState }) => {
+  const { token } = getState().auth;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  const response = await axios.get(`${backendURL}/getAdmin`);
   return response.data;
 });
 
@@ -26,6 +31,7 @@ const userSlice = createSlice({
   initialState: {
     users: [],
     user: {},
+    admin: {},
     loading: false,
     error: null,
   },
@@ -53,6 +59,18 @@ const userSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(getUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(getAdmin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAdmin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.admin = action.payload;
+      })
+      .addCase(getAdmin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })

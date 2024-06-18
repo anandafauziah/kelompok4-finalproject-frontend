@@ -18,6 +18,7 @@ const Navbar = () => {
 
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.user);
+  const userLoading = useSelector((state) => state.user.loading);
   const { carts, loading, totalPrice } = useSelector((state) => state.cart);
 
   const [logoutLoading, setLogoutLoading] = useState(false);
@@ -141,7 +142,7 @@ const Navbar = () => {
               <div className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                   <div className="w-10 rounded-full">
-                    <img alt="Tailwind CSS Navbar component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                    <img alt="Tailwind CSS Navbar component" src={`${(!userLoading && user?.data.avatar) || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"}`} />
                   </div>
                 </div>
                 <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">

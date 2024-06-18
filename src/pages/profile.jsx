@@ -15,6 +15,7 @@ const UserProfile = () => {
   useLogin();
 
   const { token } = useSelector((state) => state.auth);
+  const { provinces } = useSelector((state) => state.province);
 
   const dispatch = useDispatch();
 
@@ -26,8 +27,10 @@ const UserProfile = () => {
 
   // Fetch Provinces
   useEffect(() => {
-    dispatch(fetchProvince());
-  }, []);
+    if (token && !provinces) {
+      dispatch(fetchProvince());
+    }
+  }, [token]);
 
   return (
     <div className="flex flex-col min-h-screen">
