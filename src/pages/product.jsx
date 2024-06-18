@@ -18,11 +18,9 @@ const ProductPage = () => {
 
   // Fetch Products
   useEffect(() => {
-    if (!products) {
-      dispatch(fetchProduct());
-    }
+    dispatch(fetchProduct());
     dispatch(setSearchKey(""));
-  }, []);
+  }, [products]);
 
   const { searchKey } = useSelector((state) => state.product);
   const cartLoading = useSelector((state) => state.cart.loading);
@@ -38,10 +36,11 @@ const ProductPage = () => {
 
   // Fetch Cart if token exist
   const { token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (token) {
+    if (token && !user?.data?.is_admin) {
       dispatch(fetchCart(token));
     }
   }, [token]);
@@ -49,28 +48,28 @@ const ProductPage = () => {
   return (
     <div className="flex flex-col gap-24 min-h-screen">
       <Header title="Products" />
-      {cartLoading && !loading && (
-        <div className="fixed top-32 left-1/2 text-lg z-[9999]">
-          <span className="loading loading-spinner loading-lg text-first"></span>
+      {cartLoading && (
+        <div className="fixed top-1/3 left-1/2 text-lg z-[99999]">
+          <span className="loading loading-bars loading-lg text-first"></span>
         </div>
       )}
       <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-16 md:px-16 grow">
         {loading ? (
-          <div className="absolute top-1/3 text-lg">
+          <div className="fixed top-1/3 text-lg">
             <span className="loading loading-bars loading-lg text-first"></span>
           </div>
         ) : searchKey ? (
-          searchProducts?.map((product) => {
+          searchProducts?.map((product, i) => {
             return (
-              <div key={product.id}>
+              <div key={i}>
                 <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
               </div>
             );
           })
         ) : (
-          products?.map((product) => {
+          products?.map((product, i) => {
             return (
-              <div key={product.id}>
+              <div key={i}>
                 <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
               </div>
             );

@@ -5,7 +5,7 @@ const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 export const fetchProduct = createAsyncThunk("product/fetchProduct", async () => {
   const response = await axios.get(`${backendURL}/product`);
-  return response.data.products;
+  return response.data.products.sort((a, b) => b.id - a.id);
 });
 
 export const getProduct = createAsyncThunk("product/getProduct", async (_, { getState }) => {

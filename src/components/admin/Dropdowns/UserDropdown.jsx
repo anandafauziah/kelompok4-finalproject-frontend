@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { FaPowerOff, FaUser } from "react-icons/fa6";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,18 +13,27 @@ const UserDropdown = () => {
 
   const navigate = useNavigate();
 
+  const [logoutLoading, setLogoutLoading] = useState(false);
+
   const handleLogout = async () => {
+    setLogoutLoading(true);
     const backendURL = import.meta.env.VITE_BACKEND_URL;
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     await axios.post(`${backendURL}/auth/logout`).then((response) => {
       dispatch(logout());
       alert(response.data.message);
+      setLogoutLoading(false);
       navigate("/");
     });
   };
 
   return (
     <>
+      {logoutLoading && (
+        <div className="fixed top-24 left-5 md:left-3/4 z-[99999]">
+          <span className="loading loading-spinner loading-lg md:loading-lg text-first"></span>
+        </div>
+      )}
       <div className="dropdown dropdown-end">
         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
           <div className="w-10 rounded-full">

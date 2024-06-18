@@ -16,9 +16,10 @@ const HomePage = () => {
 
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (token) {
+    if (token && !user?.data?.is_admin) {
       dispatch(fetchCart(token));
     }
   }, [token]);
@@ -29,10 +30,8 @@ const HomePage = () => {
 
   // Fetch Products
   useEffect(() => {
-    if (!products) {
-      dispatch(fetchProduct());
-    }
-    setNewArrivals(products?.slice(-5));
+    dispatch(fetchProduct());
+    setNewArrivals(products?.slice(0, 4));
   }, []);
 
   return (
@@ -40,21 +39,21 @@ const HomePage = () => {
       <div className="bg-third">
         <Navbar />
       </div>
-      {cartLoading && !loading && (
-        <div className="fixed top-32 left-1/2 text-lg z-[9999]">
-          <span className="loading loading-spinner loading-lg text-first"></span>
+      {cartLoading && (
+        <div className="fixed top-1/3 left-1/2 text-lg z-[99999]">
+          <span className="loading loading-bars loading-lg text-first"></span>
         </div>
       )}
       <div className="text-center font-semibold text-2xl mt-24">New Arrivals</div>
       <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-10 md:px-16 my-20 grow">
         {loading ? (
-          <div className="absolute top-1/3 left-1/2 text-lg">
+          <div className="fixed top-1/3 left-1/2 text-lg">
             <span className="loading loading-bars loading-lg text-first"></span>
           </div>
         ) : (
-          newArrivals?.map((product) => {
+          newArrivals?.map((product, i) => {
             return (
-              <div key={product.id}>
+              <div key={i}>
                 <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
               </div>
             );

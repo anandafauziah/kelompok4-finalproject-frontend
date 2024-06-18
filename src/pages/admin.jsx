@@ -7,6 +7,7 @@ import HeaderStats from "../components/admin/Headers/HeaderStats";
 
 const Admin = (props) => {
   document.title = "JO'E Cape | Dashboard";
+
   useLogin();
 
   const { children } = props;
