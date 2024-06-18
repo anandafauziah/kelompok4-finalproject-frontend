@@ -59,9 +59,9 @@ const ProductPage = () => {
             <span className="loading loading-bars loading-lg text-first"></span>
           </div>
         ) : searchKey ? (
-          searchProducts?.map((product, i) => {
+          searchProducts?.map((product, id) => {
             return (
-              <div key={i}>
+              <div key={product.id}>
                 <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
               </div>
             );

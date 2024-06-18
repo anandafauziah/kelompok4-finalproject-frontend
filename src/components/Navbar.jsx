@@ -46,10 +46,6 @@ const Navbar = () => {
     return price?.toLocaleString("id-ID", { styles: "currency", currency: "IDR" });
   };
 
-  const handleSearchProduct = (e) => {
-    dispatch(setSearchKey(e.target.value));
-  };
-
   return (
     <>
       {logoutLoading && (
@@ -103,7 +99,15 @@ const Navbar = () => {
               <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
                 <div className="card-body">
                   <div className="form-control">
-                    <input type="text" placeholder="Search" className="input input-bordered md:w-auto" onChange={handleSearchProduct} />
+                    <input
+                      type="text"
+                      placeholder="Search"
+                      className="input input-bordered md:w-auto"
+                      onChange={(e) => {
+                        e.preventDefault();
+                        dispatch(setSearchKey(e.target.value));
+                      }}
+                    />
                   </div>
                 </div>
               </div>
