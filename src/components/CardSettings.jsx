@@ -94,6 +94,7 @@ function CardSettings() {
         dispatch(getUser(token));
         alert(res.data.message);
         setUpdateAvatarLoading(false);
+        window.location.reload();
       })
       .catch((err) => console.log(err.response.data));
   };

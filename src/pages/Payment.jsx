@@ -10,6 +10,7 @@ import { getCities, getPostalCode } from "../api";
 import { getAdmin, getUser } from "../slices/userSlice";
 import axios from "axios";
 import { fetchProvince } from "../slices/provinceSlice";
+import { createOrder } from "../slices/orderSlice";
 
 function UserPayment() {
   useEffect(() => {
@@ -115,6 +116,7 @@ function UserPayment() {
 
   // Order States
   const [orderItems, setOrderItems] = useState([]);
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [couriers] = useState([
     {
       name: "JNE",
@@ -208,10 +210,18 @@ function UserPayment() {
       .catch((err) => console.log(err));
   };
 
-  const handleCreateOrder = async () => {
-    await dispatch(createOrder({ items: orderItems, user, amount: totalPrice }, token))
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+  const handleCreateOrder = async (e) => {
+    e.preventDefault();
+    setIsPaymentLoading(true);
+    await dispatch(createOrder({ items: orderItems, user, amount: total }, token))
+      .then((res) => {
+        setIsPaymentLoading(false);
+        window.location.href = res.payload.snapUrl;
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsPaymentLoading(false);
+      });
   };
 
   const indoCurrency = (price) => {
@@ -219,163 +229,169 @@ function UserPayment() {
   };
 
   return (
-    <div className="min-h-screen bg-second flex items-center p-5">
-      {isLoading && (
-        <div className="fixed top-24 left-1/2 z-[99999]">
-          <span className="loading loading-spinner loading-lg text-first"></span>
-        </div>
-      )}
-      <div className="md:p-10 mx-auto bg-white shadow-md rounded-md p-4">
-        <h1 className="text-4xl font-bold text-[#322C2B] mb-3 md:mb-0">Checkout</h1>
-        <div className="flex-col md:flex-row items-center gap-3 flex md:space-x-8">
-          {/* Bagian Kiri: Checkout Form */}
-          <div className="md:flex-1 mt-0 md:space-y-8">
-            <div className="p-2 block border-2 border-[#AF8260] rounded">
-              <div className="flex p-2 gap-x-3 tracking-tight">
-                <span className="font-semibold text-gray-400 text-md">Contact</span>
-                <span className="font-medium text-md mx-auto">{user?.data.name}</span>
-              </div>
-              <div className="flex border-b border-[#AF8260]"></div>
-              <div className="flex justify-between p-2 gap-x-3 tracking-tight">
-                <span className="font-semibold text-gray-400 text-md">Ship to</span>
-                <span className="font-medium text-md text-[#322C2B]">
-                  {province || ""}, {city || ""}, {postalCode || ""}
-                </span>
-                <button className="font-semibold text-[#AF8260] hover:text-[#322C2B]" onClick={() => document.getElementById("addressModal").showModal()}>
-                  Edit
-                </button>
-              </div>
-            </div>
-
-            {/* Update Address Modal */}
-            <dialog id="addressModal" className="modal">
-              <div className="modal-box">
-                <h3 className="font-bold text-lg">Change Address</h3>
-                {isLoading && (
-                  <div className="mx-auto text-center mt-2">
-                    <span className="loading loading-spinner loading-lg text-second"></span>
-                  </div>
-                )}
-                <div className="modal-action flex flex-col gap-y-4">
-                  <div className="mb-2">
-                    <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">Province</label>
-                    <select
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      onChange={(e) => {
-                        fetchCities(e.target.value);
-                        setProvinceName(e.target.value);
-                      }}
-                    >
-                      <option selected disabled>
-                        Choose Province
-                      </option>
-                      {loading ? (
-                        <option>Loading...</option>
-                      ) : (
-                        provinces?.map((province, idx) => {
-                          return (
-                            <option key={idx} className="text-sm" value={province.province_id}>
-                              {province.province}
-                            </option>
-                          );
-                        })
-                      )}
-                    </select>
-                  </div>
-                  <div className="mb-2">
-                    <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">Province</label>
-                    <select
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      onChange={(e) => {
-                        fetchPostalCode(e.target.value);
-                        setCityName(e.target.value);
-                      }}
-                    >
-                      <option selected disabled>
-                        Choose City
-                      </option>
-                      {isCityLoading ? (
-                        <option>Loading...</option>
-                      ) : (
-                        cities?.map((city, idx) => {
-                          return (
-                            <option key={idx} value={city.city_id}>
-                              {city.type} {city.city_name}
-                            </option>
-                          );
-                        })
-                      )}
-                    </select>
-                  </div>
-                  <div className="mb-2">
-                    <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">Province</label>
-                    <select className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-                      {isPostalCodeLoading ? <option>Loading...</option> : <option value={postalCode}>{postalCode}</option>}
-                    </select>
-                  </div>
-                  <div className="flex items-center gap-x-3 mt-3">
-                    <button
-                      className="btn btn-success text-white w-1/2"
-                      type="button"
-                      disabled={isPostalCodeLoading || loading || isCityLoading ? true : false}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (confirm("Save address?")) {
-                          handleUpdateAddress();
-                        }
-                      }}
-                    >
-                      Save
-                    </button>
-                    <button type="button" className="btn bg-slate-300 w-1/2" onClick={() => document.getElementById("addressModal").close()}>
-                      Close
-                    </button>
-                  </div>
+    <>
+      <div className="min-h-screen bg-second flex items-center p-5">
+        {isLoading && (
+          <div className="fixed top-24 left-1/2 z-[99999]">
+            <span className="loading loading-spinner loading-lg text-first"></span>
+          </div>
+        )}
+        {isPaymentLoading && (
+          <div className="fixed top-24 left-1/2 z-[99999]">
+            <span className="loading loading-spinner loading-lg text-first"></span>
+          </div>
+        )}
+        <div className="md:p-10 mx-auto bg-white shadow-md rounded-md p-4">
+          <h1 className="text-4xl font-bold text-[#322C2B] mb-3 md:mb-0">Checkout</h1>
+          <div className="flex-col md:flex-row items-center gap-3 flex md:space-x-8">
+            {/* Bagian Kiri: Checkout Form */}
+            <div className="md:flex-1 mt-0 md:space-y-8">
+              <div className="p-2 block border-2 border-[#AF8260] rounded">
+                <div className="flex p-2 gap-x-3 tracking-tight">
+                  <span className="font-semibold text-gray-400 text-md">Contact</span>
+                  <span className="font-medium text-md mx-auto">{user?.data.name}</span>
+                </div>
+                <div className="flex border-b border-[#AF8260]"></div>
+                <div className="flex justify-between p-2 gap-x-3 tracking-tight">
+                  <span className="font-semibold text-gray-400 text-md">Ship to</span>
+                  <span className="font-medium text-md text-[#322C2B]">
+                    {province || ""}, {city || ""}, {postalCode || ""}
+                  </span>
+                  <button className="font-semibold text-[#AF8260] hover:text-[#322C2B]" onClick={() => document.getElementById("addressModal").showModal()}>
+                    Edit
+                  </button>
                 </div>
               </div>
-            </dialog>
 
-            <div className="py-2 flex gap-2">
-              <select
-                className="select bg-[#AF8260] w-full py-2 rounded-md text-white font-medium max-w-xs text-base focus:outline-none"
-                disabled={regionIdLoading ? true : false || isLoading ? true : false}
-                onChange={handleGetServices}
-                required
-              >
-                <option disabled selected>
-                  Choose Your Shipping
-                </option>
-                {couriers.map((item, i) => {
-                  return (
-                    <option key={i} value={item.value}>
-                      {item.name}
-                    </option>
-                  );
-                })}
-              </select>
+              {/* Update Address Modal */}
+              <dialog id="addressModal" className="modal">
+                <div className="modal-box">
+                  <h3 className="font-bold text-lg">Change Address</h3>
+                  {isLoading && (
+                    <div className="mx-auto text-center mt-2">
+                      <span className="loading loading-spinner loading-lg text-second"></span>
+                    </div>
+                  )}
+                  <div className="modal-action flex flex-col gap-y-4">
+                    <div className="mb-2">
+                      <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">Province</label>
+                      <select
+                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        onChange={(e) => {
+                          fetchCities(e.target.value);
+                          setProvinceName(e.target.value);
+                        }}
+                      >
+                        <option selected disabled>
+                          Choose Province
+                        </option>
+                        {loading ? (
+                          <option>Loading...</option>
+                        ) : (
+                          provinces?.map((province, idx) => {
+                            return (
+                              <option key={idx} className="text-sm" value={province.province_id}>
+                                {province.province}
+                              </option>
+                            );
+                          })
+                        )}
+                      </select>
+                    </div>
+                    <div className="mb-2">
+                      <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">Province</label>
+                      <select
+                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        onChange={(e) => {
+                          fetchPostalCode(e.target.value);
+                          setCityName(e.target.value);
+                        }}
+                      >
+                        <option selected disabled>
+                          Choose City
+                        </option>
+                        {isCityLoading ? (
+                          <option>Loading...</option>
+                        ) : (
+                          cities?.map((city, idx) => {
+                            return (
+                              <option key={idx} value={city.city_id}>
+                                {city.type} {city.city_name}
+                              </option>
+                            );
+                          })
+                        )}
+                      </select>
+                    </div>
+                    <div className="mb-2">
+                      <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">Province</label>
+                      <select className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                        {isPostalCodeLoading ? <option>Loading...</option> : <option value={postalCode}>{postalCode}</option>}
+                      </select>
+                    </div>
+                    <div className="flex items-center gap-x-3 mt-3">
+                      <button
+                        className="btn btn-success text-white w-1/2"
+                        type="button"
+                        disabled={isPostalCodeLoading || loading || isCityLoading ? true : false}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (confirm("Save address?")) {
+                            handleUpdateAddress();
+                          }
+                        }}
+                      >
+                        Save
+                      </button>
+                      <button type="button" className="btn bg-slate-300 w-1/2" onClick={() => document.getElementById("addressModal").close()}>
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </dialog>
 
-              <select
-                className="select bg-[#AF8260] w-full py-2 rounded-md text-white font-medium max-w-xs text-base focus:outline-none"
-                onChange={(e) => {
-                  setShippingFee(e.target.value);
-                  setTotal(parseFloat(e.target.value) + totalPrice);
-                }}
-                disabled={isServiceLoading ? true : false}
-                required
-              >
-                <option disabled selected>
-                  Choose Your Services
-                </option>
-                {services?.map((item, i) => {
-                  return (
-                    <option key={i} value={item.cost[0].value}>
-                      {item.service} ({item.description}) - Rp{indoCurrency(item.cost[0].value)},00 - {item.cost[0].etd} hari
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-            {/* <div className="mb-2 space-y-4">
+              <div className="py-2 flex gap-2">
+                <select
+                  className="select bg-[#AF8260] w-full py-2 rounded-md text-white font-medium max-w-xs text-base focus:outline-none"
+                  disabled={regionIdLoading ? true : false || isLoading ? true : false}
+                  onChange={handleGetServices}
+                  required
+                >
+                  <option disabled selected>
+                    Choose Your Shipping
+                  </option>
+                  {couriers.map((item, i) => {
+                    return (
+                      <option key={i} value={item.value}>
+                        {item.name}
+                      </option>
+                    );
+                  })}
+                </select>
+
+                <select
+                  className="select bg-[#AF8260] w-full py-2 rounded-md text-white font-medium max-w-xs text-base focus:outline-none"
+                  onChange={(e) => {
+                    setShippingFee(e.target.value);
+                    setTotal(parseFloat(e.target.value) + totalPrice);
+                  }}
+                  disabled={isServiceLoading ? true : false}
+                  required
+                >
+                  <option disabled selected>
+                    Choose Your Services
+                  </option>
+                  {services?.map((item, i) => {
+                    return (
+                      <option key={i} value={item.cost[0].value}>
+                        {item.service} ({item.description}) - Rp{indoCurrency(item.cost[0].value)},00 - {item.cost[0].etd} hari
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              {/* <div className="mb-2 space-y-4">
             <h2 className="text-xl font-bold mb-0 text-[#322C2B]">Payment Methods</h2>
             <div className="flex gap-8 mb-4">
               <div>
@@ -423,63 +439,64 @@ function UserPayment() {
               </div>
             </div>
           </div> */}
-          </div>
+            </div>
 
-          {/* Bagian Kanan: Order Details */}
-          <div className="sm:max-w-xs w-full sm:pt-16">
-            <div className="bg-[#AF8260] shadow-md rounded-md p-4 sm:space-y-6 ">
-              <h2 className="text-xl font-bold text-white mb-2">Order Details</h2>
+            {/* Bagian Kanan: Order Details */}
+            <div className="sm:max-w-xs w-full sm:pt-16">
+              <div className="bg-[#AF8260] shadow-md rounded-md p-4 sm:space-y-6 ">
+                <h2 className="text-xl font-bold text-white mb-2">Order Details</h2>
 
-              {carts.length > 0 &&
-                carts.map((item, idx) => {
-                  return (
-                    <div className="flex items-center justify-between" key={idx}>
-                      <div className="flex items-center">
-                        <img src={item.cart_items[0].product.image} alt={item.cart_items[0].product.title} className="w-16 h-16 mr-4" />
-                        <div>
-                          <p className="font-medium text-[#322C2B] text-sm md:text-md">{item.cart_items[0].product.title}</p>
-                          <p className="text-xs md:text-sm text-white">Size {item.cart_items[0].product.size}</p>
+                {carts.length > 0 &&
+                  carts.map((item, idx) => {
+                    return (
+                      <div className="flex items-center justify-between" key={idx}>
+                        <div className="flex items-center">
+                          <img src={item.cart_items[0].product.image} alt={item.cart_items[0].product.title} className="w-16 h-16 mr-4" />
+                          <div>
+                            <p className="font-medium text-[#322C2B] text-sm md:text-md">{item.cart_items[0].product.title}</p>
+                            <p className="text-xs md:text-sm text-white">Size {item.cart_items[0].product.size}</p>
+                          </div>
                         </div>
+                        <p className="font-medium text-white text-xs w-1/3">
+                          {item.cart_items[0].quantity}x Rp{indoCurrency(item.cart_items[0].product.price)}
+                        </p>
                       </div>
-                      <p className="font-medium text-white text-xs w-1/3">
-                        {item.cart_items[0].quantity}x Rp{indoCurrency(item.cart_items[0].product.price)}
-                      </p>
-                    </div>
-                  );
-                })}
-              <div className="border-t py-4 mt-2">
-                {/* <div className="flex">
+                    );
+                  })}
+                <div className="border-t py-4 mt-2">
+                  {/* <div className="flex">
                 <input type="text" placeholder="Coupon Code" className="input h-8 text-sm focus:ring-2 focus:ring-[#322C2B] focus:outline-none focus:border-none rounded-none w-full py-1 px-3 mb-4 " />
                 <button className="min-w-20 ms-2 h-8 bg-[#322C2B] rounded focus:bg-[#322C2B] hover:bg-[#4d4746] focus:text-white">
                   <span className="text-white p-1 text-sm">Add code</span>
                 </button>
               </div> */}
-                <div className="flex justify-between mb-2 text-slate-200">
-                  <p className="font-semibold">Subtotal</p>
-                  <p className="text-md font-semibold">Rp{indoCurrency(totalPrice)}</p>
-                </div>
-                <div className="flex justify-between mb-2 text-slate-200">
-                  <p className="font-semibold">Shipping</p>
-                  <p className="text-md font-semibold">Rp{indoCurrency(parseFloat(shippingFee))}</p>
-                </div>
-                <div className="flex justify-between mb-4">
-                  <p className="text-[#322C2B] font-bold">Total</p>
-                  <p className="text-md font-bold text-[#322C2B]">Rp{indoCurrency(total)},00</p>
+                  <div className="flex justify-between mb-2 text-slate-200">
+                    <p className="font-semibold">Subtotal</p>
+                    <p className="text-md font-semibold">Rp{indoCurrency(totalPrice)}</p>
+                  </div>
+                  <div className="flex justify-between mb-2 text-slate-200">
+                    <p className="font-semibold">Shipping</p>
+                    <p className="text-md font-semibold">Rp{indoCurrency(parseFloat(shippingFee))}</p>
+                  </div>
+                  <div className="flex justify-between mb-4">
+                    <p className="text-[#322C2B] font-bold">Total</p>
+                    <p className="text-md font-bold text-[#322C2B]">Rp{indoCurrency(total)},00</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="flex gap-10 mt-5 md:mt-0 items-center">
-          <a href="/cart" className="text-[#AF8260] hover:text-[#322C2B] hover:underline focus:underline focus:text-[#322C2B]">
-            <span className="text-lg font-normal">Back to Cart</span>
-          </a>
-          <button className="bg-[#322C2B] text-white py-2 px-6 rounded focus:bg-[#322C2B] hover:bg-[#4d4746] focus:text-white">
-            <span className="text-lg font-semibold">Pay Now</span>
-          </button>
+          <div className="flex gap-10 mt-5 md:mt-0 items-center">
+            <a href="/cart" className="text-[#AF8260] hover:text-[#322C2B] hover:underline focus:underline focus:text-[#322C2B]">
+              <span className="text-lg font-normal">Back to Cart</span>
+            </a>
+            <button className="bg-[#322C2B] text-white py-2 px-6 rounded focus:bg-[#322C2B] hover:bg-[#4d4746] focus:text-white" disabled={regionIdLoading && isServiceLoading ? true : false} onClick={handleCreateOrder}>
+              <span className="text-lg font-semibold">Pay Now</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

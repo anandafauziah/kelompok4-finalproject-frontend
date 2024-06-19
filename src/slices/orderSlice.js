@@ -70,7 +70,7 @@ const orderSlice = createSlice({
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.loading = false;
-        if (state.orders.length >= 1) {
+        if (state.orders.length > 0) {
           state.orders.push(...state.orders, action.payload.order);
         } else {
           state.orders = action.payload.order;

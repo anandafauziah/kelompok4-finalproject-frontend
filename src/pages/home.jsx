@@ -30,9 +30,7 @@ const HomePage = () => {
 
   // Fetch Products
   useEffect(() => {
-    if (!products) {
-      dispatch(fetchProduct());
-    }
+    dispatch(fetchProduct());
     setNewArrivals(products?.slice(0, 4));
   }, []);
 
@@ -53,9 +51,9 @@ const HomePage = () => {
             <span className="loading loading-bars loading-lg text-first"></span>
           </div>
         ) : (
-          newArrivals?.map((product, i) => {
+          newArrivals?.map((product) => {
             return (
-              <div key={i}>
+              <div key={product.id}>
                 <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
               </div>
             );

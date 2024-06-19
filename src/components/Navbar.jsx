@@ -36,9 +36,14 @@ const Navbar = () => {
         setLogoutLoading(false);
         navigate("/");
       })
-      .catch((err) => {
+      .catch(() => {
+        dispatch(logout());
+        dispatch(deleteUser({}));
+      })
+      .finally(() => {
+        alert("Successfully logged out");
         setLogoutLoading(false);
-        return err.response.data;
+        navigate("/");
       });
   };
 
