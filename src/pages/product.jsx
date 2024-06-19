@@ -18,7 +18,9 @@ const ProductPage = () => {
 
   // Fetch Products
   useEffect(() => {
-    dispatch(fetchProduct());
+    if (!products) {
+      dispatch(fetchProduct());
+    }
     dispatch(setSearchKey(""));
   }, [products]);
 
@@ -28,7 +30,7 @@ const ProductPage = () => {
   const [searchProducts, setSearchProducts] = useState([]);
 
   useEffect(() => {
-    if (searchKey && products.length > 0) {
+    if (searchKey) {
       const items = products.filter((item) => item.title.toLowerCase().includes(searchKey.toLowerCase()) || item.category.toLowerCase().includes(searchKey.toLowerCase()));
       setSearchProducts(items);
     }
@@ -59,17 +61,17 @@ const ProductPage = () => {
             <span className="loading loading-bars loading-lg text-first"></span>
           </div>
         ) : searchKey ? (
-          searchProducts?.map((product, id) => {
+          searchProducts?.map((item) => {
             return (
-              <div key={product.id}>
-                <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
+              <div key={item.id}>
+                <ProductCard id={item.id} title={item.title} price={item.price} imageUrl={item.image} />
               </div>
             );
           })
         ) : (
-          products?.map((product, i) => {
+          products?.map((product) => {
             return (
-              <div key={i}>
+              <div key={product.id}>
                 <ProductCard id={product.id} title={product.title} price={product.price} imageUrl={product.image} />
               </div>
             );

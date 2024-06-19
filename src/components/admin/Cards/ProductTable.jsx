@@ -193,7 +193,7 @@ export default function ProductTable() {
               <div className="modal-box">
                 <h3 className="font-bold text-lg">Add Product</h3>
                 {loading && (
-                  <div className="fixed top-full left-1/2 z-[9999]">
+                  <div className="fixed top-1/2 left-1/2 z-[9999]">
                     <span className="loading loading-spinner loading-lg text-first"></span>
                   </div>
                 )}

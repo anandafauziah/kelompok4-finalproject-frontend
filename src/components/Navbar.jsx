@@ -99,15 +99,7 @@ const Navbar = () => {
               <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
                 <div className="card-body">
                   <div className="form-control">
-                    <input
-                      type="text"
-                      placeholder="Search"
-                      className="input input-bordered md:w-auto"
-                      onChange={(e) => {
-                        e.preventDefault();
-                        dispatch(setSearchKey(e.target.value));
-                      }}
-                    />
+                    <input type="text" placeholder="Search" className="input input-bordered md:w-auto" onChange={(e) => dispatch(setSearchKey(e.target.value))} />
                   </div>
                 </div>
               </div>

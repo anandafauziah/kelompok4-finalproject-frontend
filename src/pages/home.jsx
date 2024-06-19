@@ -30,7 +30,9 @@ const HomePage = () => {
 
   // Fetch Products
   useEffect(() => {
-    dispatch(fetchProduct());
+    if (!products) {
+      dispatch(fetchProduct());
+    }
     setNewArrivals(products?.slice(0, 4));
   }, []);
 
