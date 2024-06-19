@@ -3,7 +3,9 @@ import axios from "axios";
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
-export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
+export const fetchUser = createAsyncThunk("user/fetchUser", async (_, { getState }) => {
+  const { token } = getState().auth;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   const response = await axios.get(`${backendURL}/user`);
   return response.data;
 });
