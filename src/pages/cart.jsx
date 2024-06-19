@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCart, updateCart, removeFromCart } from "../slices/cartSlices";
 import useLogin from "../hooks/useLogin";
 import { useNavigate } from "react-router";
-import { createOrder, fetchOrder } from "../slices/orderSlice";
 
 const Cart = () => {
   useEffect(() => {
@@ -151,7 +150,6 @@ const Cart = () => {
                     alert("Please update your address first!");
                     navigate("/profile");
                   } else {
-                    // handleCreateOrder();
                     navigate("/checkout");
                   }
                 }}

@@ -16,6 +16,7 @@ import Payment from "../views/admin/Payment";
 import Product from "../views/admin/Product";
 import Order from "../views/admin/Order";
 import Profile from "../views/admin/Profile";
+import UserOrder from "../pages/userOrder";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,16 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <UserProfile />,
+      },
+    ],
+  },
+  {
+    path: "/order",
+    element: <PrivateRoute />,
+    children: [
+      {
+        index: true,
+        element: <UserOrder />,
       },
     ],
   },

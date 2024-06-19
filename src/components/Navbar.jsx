@@ -1,4 +1,4 @@
-import { FaRightFromBracket, FaUserPlus, FaUser, FaPowerOff, FaTableColumns } from "react-icons/fa6";
+import { FaRightFromBracket, FaUserPlus, FaUser, FaPowerOff, FaTableColumns, FaReceipt } from "react-icons/fa6";
 import Logo from "./Logo";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -39,8 +39,6 @@ const Navbar = () => {
       .catch(() => {
         dispatch(logout());
         dispatch(deleteUser({}));
-      })
-      .finally(() => {
         alert("Successfully logged out");
         setLogoutLoading(false);
         navigate("/");
@@ -148,12 +146,20 @@ const Navbar = () => {
                 </div>
                 <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                   {!user?.data?.is_admin && (
-                    <li>
-                      <a href="/profile">
-                        <FaUser />
-                        Profile
-                      </a>
-                    </li>
+                    <>
+                      <li>
+                        <a href="/profile">
+                          <FaUser />
+                          Profile
+                        </a>
+                      </li>
+                      <li>
+                        <a href="/order">
+                          <FaReceipt />
+                          Orders
+                        </a>
+                      </li>
+                    </>
                   )}
                   <li className={`${user?.data?.is_admin ? "block" : "hidden"}`}>
                     <a href="/admin">

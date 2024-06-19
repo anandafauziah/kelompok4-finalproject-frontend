@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router";
 import Header from "../components/Header";
-import { FaCartPlus, FaMoneyBill } from "react-icons/fa";
+import { FaCartPlus } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
@@ -100,7 +100,7 @@ const DetailProductPage = () => {
           </div>
           <div className="text-slate-500 font-semibold">Rp{indoCurrency(product.price)},00</div>
           <div className="">
-            <div className="font-semibold text-lg">Deskripsi:</div>
+            <div className="font-semibold text-lg">Description:</div>
             <p className="text-slate-500">{product.description}</p>
           </div>
           <div className="flex flex-wrap justify-between gap-3">
