@@ -15,6 +15,7 @@ import AdminRoute from "./adminRoute";
 import Payment from "../views/admin/Payment";
 import Product from "../views/admin/Product";
 import Order from "../views/admin/Order";
+import Profile from "../views/admin/Profile";
 
 const router = createBrowserRouter([
   {
@@ -76,6 +77,14 @@ const router = createBrowserRouter([
         element: (
           <Admin>
             <Dashboard />
+          </Admin>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <Admin>
+            <Profile />
           </Admin>
         ),
       },

@@ -4,7 +4,9 @@ import { fetchProduct } from "../../slices/productSlice";
 import { useEffect } from "react";
 
 export default function Product() {
-  document.title = "JO'E Cape | Product";
+  useEffect(() => {
+    document.title = "JO'E Cape | Product";
+  }, []);
 
   const dispatch = useDispatch();
 

@@ -28,7 +28,7 @@ function UserPayment() {
   // Fetch Admin Data
   useEffect(() => {
     dispatch(getAdmin(token));
-  }, []);
+  }, [token]);
 
   // Admin States
   const [adminProvince, setAdminProvince] = useState(admin?.address && admin?.address.province);
