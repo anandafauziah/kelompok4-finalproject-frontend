@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
-import icon from "../img/icon.png";
-import dollarIcon from "../img/dollarIcon.png";
-import userIcon from "../img/userIcon.png";
-import cvvIcon from "../img/cvvIcon.png";
-import dateIcon from "../img/dateIcon.png";
 import useLogin from "../hooks/useLogin";
 import { useDispatch, useSelector } from "react-redux";
 import { getCities, getPostalCode } from "../api";
 import { getAdmin, getUser } from "../slices/userSlice";
 import axios from "axios";
 import { fetchProvince } from "../slices/provinceSlice";
-import { createOrder } from "../slices/orderSlice";
+import { createOrder, fetchOrder } from "../slices/orderSlice";
 
 function UserPayment() {
   useEffect(() => {
@@ -213,15 +208,26 @@ function UserPayment() {
   const handleCreateOrder = async (e) => {
     e.preventDefault();
     setIsPaymentLoading(true);
-    await dispatch(createOrder({ items: orderItems, user, amount: total }, token))
+
+    const backendURL = import.meta.env.VITE_BACKEND_URL;
+
+    await axios
+      .post(
+        `${backendURL}/order`,
+        { items: orderItems, user, amount: total },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => {
         setIsPaymentLoading(false);
-        window.location.href = res.payload.snapUrl;
+        dispatch(fetchOrder(token));
+        window.open(res.data.snapUrl, "_blank");
+        window.location.href = "/";
       })
-      .catch((err) => {
-        console.log(err);
-        setIsPaymentLoading(false);
-      });
+      .catch((err) => console.log(err));
   };
 
   const indoCurrency = (price) => {

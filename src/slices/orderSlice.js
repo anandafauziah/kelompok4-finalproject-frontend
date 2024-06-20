@@ -20,11 +20,11 @@ export const createOrder = createAsyncThunk("order/createOrder", async (payload,
 
 export const updateOrder = createAsyncThunk("order/updateOrder", async (payload, { getState }) => {
   const { token } = getState().auth;
-  const { orderId, productId, quantity } = payload;
+  const { orderId, status } = payload;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   const response = await axios.put(
     `${backendURL}/order/${orderId}`,
-    { product_id: productId, quantity },
+    { status },
     {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

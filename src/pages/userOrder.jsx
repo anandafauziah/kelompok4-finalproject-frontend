@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
 import useLogin from "../hooks/useLogin";
 import { fetchOrder } from "../slices/orderSlice";
+import axios from "axios";
 
 const UserOrder = () => {
   useEffect(() => {
@@ -32,6 +33,25 @@ const UserOrder = () => {
       setUserOrders(items);
     }
   }, [orders]);
+
+  // useEffect(() => {
+  //   if (userOrders) {
+  //     const backendURL = import.meta.env.VITE_BACKEND_URL;
+
+  //     axios
+  //       .get(`${backendURL}`, {
+  //         headers: {
+  //           Authorization: `Basic U0ItTWlkLXNlcnZlci1TekVoT2pTSU9tUHRLSDBnQTB5dGZkbng6`,
+  //           Accept: "application/json",
+  //           "Content-Type": "application/json",
+  //         },
+  //       })
+  //       .then((res) => {
+  //         console.log(res);
+  //       })
+  //       .catch((err) => console.log(err));
+  //   }
+  // }, [orders, userOrders]);
 
   return (
     <div className="flex flex-col gap-16 min-h-screen">

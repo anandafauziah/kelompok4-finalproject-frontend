@@ -149,11 +149,11 @@ export default function ProductTable() {
         },
       })
       .then((res) => {
-        dispatch(fetchProduct());
-        setIsLoading(false);
-        alert(res.data.message);
-        document.getElementById(`editProduct${id}`).close();
-        window.location.reload();
+        dispatch(fetchProduct()).then(() => {
+          setIsLoading(false);
+          alert(res.data.message);
+          document.getElementById(`editProduct${id}`).close();
+        });
       })
       .catch((err) => {
         setValidation(err.response.data);

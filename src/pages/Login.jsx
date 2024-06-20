@@ -48,6 +48,7 @@ function Login() {
         setIsLoginLoading(false);
         dispatch(login({ token: response.data.access_token, expired: response.data.expires_in }));
         dispatch(getUser(response.data.access_token));
+        alert(response.data.message);
         navigate("/");
       })
       .catch((err) => {
@@ -59,11 +60,11 @@ function Login() {
 
   return (
     <>
-      {isLoginLoading && (
+      {/* {isLoginLoading && (
         <div className="absolute top-1/3 left-1/2 text-lg">
           <span className="loading loading-spinner loading-lg text-second"></span>
         </div>
-      )}
+      )} */}
       {loginError && (
         <div className="flex justify-center">
           <div role="alert" className="absolute top-10 w-1/2 alert alert-error text-white font-semibold">
@@ -104,7 +105,7 @@ function Login() {
               </div>
             </div>
             <div>
-              <button className="w-full bg-[#322C2B] text-white p-2 rounded-md hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260]">Login</button>
+              <button className="w-full bg-[#322C2B] text-white p-2 rounded-md hover:bg-[#AF8260] focus:outline-none focus:bg-[#AF8260]">{isLoginLoading ? "Logging in..." : "Login"}</button>
             </div>
             <div className="text-center">
               <p className="text-md text-gray-600">
