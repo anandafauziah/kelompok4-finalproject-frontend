@@ -1,11 +1,13 @@
-// components
-import React from "react";
+import React, { useEffect } from "react";
 
 import CardBarChart from "../../components/admin/Cards/CardBarCharts";
 import CardOrders from "../../components/admin/Cards/CardOrders";
 
 export default function Dashboard() {
-  document.title = "JO'E Cape | Dashboard";
+  useEffect(() => {
+    document.title = "JO'E Cape | Dashboard";
+  }, []);
+
   return (
     <>
       <div className="flex flex-wrap mt-10">

@@ -16,14 +16,23 @@ const UserOrder = () => {
   const dispatch = useDispatch();
 
   const { token } = useSelector((state) => state.auth);
-
-  // Fetch Order
-  useEffect(() => {
-    dispatch(fetchOrder(token));
-  }, [token]);
-
   const { user } = useSelector((state) => state.user);
   const { orders, loading } = useSelector((state) => state.order);
+
+  // Fetch User Orders
+  useEffect(() => {
+    const backendURL = import.meta.env.VITE_BACKEND_URL;
+    axios
+      .get(`${backendURL}/updatePaidOrders/${user?.data.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        dispatch(fetchOrder(token));
+      })
+      .catch((err) => console.log(err));
+  }, [token]);
 
   const [userOrders, setUserOrders] = useState([]);
 
@@ -34,32 +43,18 @@ const UserOrder = () => {
     }
   }, [orders]);
 
-  // useEffect(() => {
-  //   if (userOrders) {
-  //     const backendURL = import.meta.env.VITE_BACKEND_URL;
-
-  //     axios
-  //       .get(`${backendURL}`, {
-  //         headers: {
-  //           Authorization: `Basic U0ItTWlkLXNlcnZlci1TekVoT2pTSU9tUHRLSDBnQTB5dGZkbng6`,
-  //           Accept: "application/json",
-  //           "Content-Type": "application/json",
-  //         },
-  //       })
-  //       .then((res) => {
-  //         console.log(res);
-  //       })
-  //       .catch((err) => console.log(err));
-  //   }
-  // }, [orders, userOrders]);
-
   return (
     <div className="flex flex-col gap-16 min-h-screen">
       <Header title="Your Orders" />
       <div className="cart-container px-4 md:px-32 grow">
         {loading && (
-          <div className="mx-auto text-center">
-            <span className="loading loading-spinner loading-lg text-second"></span>
+          <div className="fixed top-1/2 left-1/2 z-[9999]">
+            <span className="loading loading-spinner loading-lg text-first"></span>
+          </div>
+        )}
+        {loading && (
+          <div className="fixed top-1/2 left-1/2 z-[9999]">
+            <span className="loading loading-spinner loading-lg text-first"></span>
           </div>
         )}
         {/* Item List */}
@@ -72,6 +67,7 @@ const UserOrder = () => {
                 <th>Amount</th>
                 <th>Status</th>
                 <th>Ordered at</th>
+                <th>Ship to</th>
               </tr>
             </thead>
             <tbody>
@@ -106,14 +102,32 @@ const UserOrder = () => {
                           currency: "IDR",
                         }).format(item.amount)}
                       </td>
-                      <td>{item.status}</td>
+                      <td>
+                        {item.status === "Unpaid" ? (
+                          <div className="flex flex-wrap gap-2 items-center justify-center">
+                            {item.status}
+                            <button
+                              className="btn btn-success text-white btn-xs"
+                              onClick={() => {
+                                window.open(item.snap_url, "_blank");
+                                window.location.replace("/");
+                              }}
+                            >
+                              Pay Now
+                            </button>
+                          </div>
+                        ) : (
+                          item.status
+                        )}
+                      </td>
                       <td>{item.date}</td>
+                      <td>{item.ship_address}</td>
                     </tr>
                   );
                 })
               ) : (
                 <tr>
-                  <td colSpan={5} className="text-center">
+                  <td colSpan={6} className="text-center">
                     Empty
                   </td>
                 </tr>

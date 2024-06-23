@@ -46,6 +46,8 @@ function UserPayment() {
   const [city, setCity] = useState(user?.address && user?.address.city);
   const [postalCode, setPostalCode] = useState(user?.address && user?.address.postal_code);
 
+  console.log(city, province);
+
   // Fetch Cities
   const fetchCities = async (provinceId) => {
     try {
@@ -214,7 +216,7 @@ function UserPayment() {
     await axios
       .post(
         `${backendURL}/order`,
-        { items: orderItems, user, amount: total },
+        { items: orderItems, user, amount: total, ship_address: `${city}, ${province}` },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -222,9 +224,9 @@ function UserPayment() {
         }
       )
       .then((res) => {
-        setIsPaymentLoading(false);
         dispatch(fetchOrder(token));
         window.open(res.data.snapUrl, "_blank");
+        setIsPaymentLoading(false);
         window.location.href = "/";
       })
       .catch((err) => console.log(err));

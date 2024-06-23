@@ -12,9 +12,9 @@ export const fetchOrder = createAsyncThunk("order/fetchOrder", async (_, { getSt
 
 export const createOrder = createAsyncThunk("order/createOrder", async (payload, { getState }) => {
   const { token } = getState().auth;
-  const { items, user, amount } = payload;
+  const { items, user, amount, ship_address } = payload;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  const response = await axios.post(`${backendURL}/order`, { items, user, amount });
+  const response = await axios.post(`${backendURL}/order`, { items, user, amount, ship_address });
   return response.data;
 });
 
