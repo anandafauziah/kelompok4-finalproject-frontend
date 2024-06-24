@@ -616,7 +616,7 @@ export default function ProductTable() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="text-center">
+                  <td colSpan={5} className="text-center py-10">
                     Empty
                   </td>
                 </tr>

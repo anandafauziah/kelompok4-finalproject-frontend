@@ -16,6 +16,7 @@ export default function HeaderStats() {
   }, [token]);
 
   const { users } = useSelector((state) => state.user);
+  const { orders } = useSelector((state) => state.order);
 
   return (
     <>
@@ -26,13 +27,13 @@ export default function HeaderStats() {
             {/* Card stats */}
             <div className="flex flex-wrap">
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                <CardStats statSubtitle="Users" statTitle={users?.data.length} statIconName={<FaUsers />} statIconColor="bg-first" />
+                <CardStats statSubtitle="Users" statTitle={users?.data.length || 0} statIconName={<FaUsers />} statIconColor="bg-first" />
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                <CardStats statSubtitle="Products" statTitle={products?.length} statIconName={<FaShirt />} statIconColor="bg-first" />
+                <CardStats statSubtitle="Products" statTitle={products?.length || 0} statIconName={<FaShirt />} statIconColor="bg-first" />
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                <CardStats statSubtitle="Orders" statTitle="9" statIconName={<FaReceipt />} statIconColor="bg-first" />
+                <CardStats statSubtitle="Orders" statTitle={orders?.length || 0} statIconName={<FaReceipt />} statIconColor="bg-first" />
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats statSubtitle="Payments" statTitle="9" statIconName={<FaMoneyBill />} statIconColor="bg-first" />

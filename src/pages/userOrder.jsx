@@ -63,7 +63,7 @@ const UserOrder = () => {
             <thead>
               <tr>
                 <th>Order ID</th>
-                <th>Item</th>
+                <th>Item(s)</th>
                 <th>Amount</th>
                 <th>Status</th>
                 <th>Ordered at</th>
@@ -103,9 +103,9 @@ const UserOrder = () => {
                         }).format(item.amount)}
                       </td>
                       <td>
-                        {item.status === "Unpaid" ? (
-                          <div className="flex flex-wrap gap-2 items-center justify-center">
-                            {item.status}
+                        {item.status === "Unpaid" && (
+                          <div className="flex items-center flex-wrap gap-2">
+                            <div className="badge badge-warning">{item.status}</div>
                             <button
                               className="btn btn-success text-white btn-xs"
                               onClick={() => {
@@ -116,9 +116,9 @@ const UserOrder = () => {
                               Pay Now
                             </button>
                           </div>
-                        ) : (
-                          item.status
                         )}
+                        {item.status === "Paid" && <div className="badge badge-primary">{item.status}</div>}
+                        {item.status === "Accepted" && <div className="badge badge-success">{item.status}</div>}
                       </td>
                       <td>{item.date}</td>
                       <td>{item.ship_address}</td>

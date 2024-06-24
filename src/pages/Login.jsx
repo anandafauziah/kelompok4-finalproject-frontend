@@ -48,8 +48,8 @@ function Login() {
         setIsLoginLoading(false);
         dispatch(login({ token: response.data.access_token, expired: response.data.expires_in }));
         dispatch(getUser(response.data.access_token));
-        alert(response.data.message);
         navigate("/");
+        alert(response.data.message);
       })
       .catch((err) => {
         setLoginError(err.response.data.error);

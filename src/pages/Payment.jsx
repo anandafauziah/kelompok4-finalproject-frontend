@@ -46,8 +46,6 @@ function UserPayment() {
   const [city, setCity] = useState(user?.address && user?.address.city);
   const [postalCode, setPostalCode] = useState(user?.address && user?.address.postal_code);
 
-  console.log(city, province);
-
   // Fetch Cities
   const fetchCities = async (provinceId) => {
     try {
@@ -82,6 +80,8 @@ function UserPayment() {
     setCity(city.type + " " + city.city_name);
   };
 
+  const [updateAddressLoading, setUpdateAddressLoading] = useState(false);
+
   const handleUpdateAddress = () => {
     const backendURL = import.meta.env.VITE_BACKEND_URL;
 
@@ -91,7 +91,7 @@ function UserPayment() {
     formData.append("city", city);
     formData.append("postal_code", postalCode);
 
-    setIsLoading(true);
+    setUpdateAddressLoading(true);
 
     axios
       .post(`${backendURL}/user/updateAddress/${user?.data.id}`, formData, {
@@ -100,14 +100,16 @@ function UserPayment() {
         },
       })
       .then((response) => {
-        dispatch(getUser(token));
-        alert(response.data.message);
-        document.getElementById("addressModal").close();
-        window.location.reload();
+        dispatch(getUser(token)).then(() => {
+          setUpdateAddressLoading(false);
+          alert(response.data.message);
+          document.getElementById("addressModal").close();
+          window.location.reload();
+        });
       })
       .catch((err) => {
         console.log(err);
-        setIsLoading(false);
+        setUpdateAddressLoading(false);
       });
   };
 
@@ -275,9 +277,9 @@ function UserPayment() {
               <dialog id="addressModal" className="modal">
                 <div className="modal-box">
                   <h3 className="font-bold text-lg">Change Address</h3>
-                  {isLoading && (
+                  {updateAddressLoading && (
                     <div className="mx-auto text-center mt-2">
-                      <span className="loading loading-spinner loading-lg text-second"></span>
+                      <span className="loading loading-spinner loading-lg text-first"></span>
                     </div>
                   )}
                   <div className="modal-action flex flex-col gap-y-4">
@@ -471,6 +473,9 @@ function UserPayment() {
                       </div>
                     );
                   })}
+
+                <h2 className="text-sm font-bold text-white mb-2">Weight : {weight || 0} gram</h2>
+
                 <div className="border-t py-4 mt-2">
                   {/* <div className="flex">
                 <input type="text" placeholder="Coupon Code" className="input h-8 text-sm focus:ring-2 focus:ring-[#322C2B] focus:outline-none focus:border-none rounded-none w-full py-1 px-3 mb-4 " />
@@ -498,7 +503,15 @@ function UserPayment() {
             <a href="/cart" className="text-[#AF8260] hover:text-[#322C2B] hover:underline focus:underline focus:text-[#322C2B]">
               <span className="text-lg font-normal">Back to Cart</span>
             </a>
-            <button className="bg-[#322C2B] text-white py-2 px-6 rounded focus:bg-[#322C2B] hover:bg-[#4d4746] focus:text-white" disabled={regionIdLoading && isServiceLoading ? true : false} onClick={handleCreateOrder}>
+            <button
+              className="bg-[#322C2B] text-white py-2 px-6 rounded focus:bg-[#322C2B] focus:text-white"
+              disabled={services.length == 0 || shippingFee == 0 ? true : false}
+              onClick={(e) => {
+                if (confirm("Continue to pay?")) {
+                  handleCreateOrder(e);
+                }
+              }}
+            >
               <span className="text-lg font-semibold">Pay Now</span>
             </button>
           </div>

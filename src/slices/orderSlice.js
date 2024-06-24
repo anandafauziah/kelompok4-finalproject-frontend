@@ -7,7 +7,7 @@ export const fetchOrder = createAsyncThunk("order/fetchOrder", async (_, { getSt
   const { token } = getState().auth;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   const response = await axios.get(`${backendURL}/order`);
-  return response.data;
+  return response.data.orders.sort((a, b) => b.id - a.id);
 });
 
 export const createOrder = createAsyncThunk("order/createOrder", async (payload, { getState }) => {
@@ -58,7 +58,7 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrder.fulfilled, (state, action) => {
         state.loading = false;
-        state.orders = action.payload.orders;
+        state.orders = action.payload;
       })
       .addCase(fetchOrder.rejected, (state, action) => {
         state.loading = false;
