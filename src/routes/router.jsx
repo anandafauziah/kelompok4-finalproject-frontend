@@ -13,6 +13,7 @@ import Dashboard from "../views/admin/Dashboard";
 import User from "../views/admin/User";
 import AdminRoute from "./adminRoute";
 import Payment from "../views/admin/Payment";
+import Category from "../views/admin/Category";
 import Product from "../views/admin/Product";
 import Order from "../views/admin/Order";
 import Profile from "../views/admin/Profile";
@@ -104,6 +105,14 @@ const router = createBrowserRouter([
         element: (
           <Admin>
             <User />
+          </Admin>
+        ),
+      },
+      {
+        path: "category",
+        element: (
+          <Admin>
+            <Category />
           </Admin>
         ),
       },

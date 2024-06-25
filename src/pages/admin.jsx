@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import useLogin from "../hooks/useLogin";
 
 import AdminNavbar from "../components/admin/Navbars/AdminNavbar";
@@ -6,7 +6,9 @@ import Sidebar from "../components/admin/Sidebar/Sidebar";
 import HeaderStats from "../components/admin/Headers/HeaderStats";
 
 const Admin = (props) => {
-  document.title = "JO'E Cape | Dashboard";
+  useEffect(() => {
+    document.title = "JO'E Cape | Dashboard";
+  }, []);
 
   useLogin();
 

@@ -1,14 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { fetchOrder } from "../../../slices/orderSlice";
 
-export default function ProductTable() {
+export default function OrderTable() {
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   // Get Orders State
   const { orders, loading } = useSelector((state) => state.order);
-  const [sortedOrders, setSortedOrders] = useState([]);
 
   // Search Orders
   const [searchKey, setSearchKey] = useState("");
@@ -28,46 +28,57 @@ export default function ProductTable() {
   }, [orders, searchKey]);
 
   // Accept Order
-  // const handleEditProduct = async (e, id) => {
-  //   e.preventDefault();
+  const [isLoading, setLoading] = useState(false);
 
-  //   const data = new FormData();
+  const handleAcceptOrder = async (orderId) => {
+    const backendURL = import.meta.env.VITE_BACKEND_URL;
 
-  //   data.append("category_id", categoryId);
-  //   data.append("title", title);
-  //   image && data.append("image", image);
-  //   data.append("price", price);
-  //   data.append("size", size);
-  //   data.append("weight", weight);
-  //   data.append("year", year);
-  //   data.append("description", description);
+    setLoading(true);
 
-  //   const backendURL = import.meta.env.VITE_BACKEND_URL;
+    await axios
+      .get(`${backendURL}/acceptOrder/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        dispatch(fetchOrder(token)).then(() => {
+          setLoading(false);
+          alert(res.data.message);
+        });
+      })
+      .catch((err) => console.log(err));
+  };
 
-  //   setIsLoading(true);
+  // Reject Order
+  const handleRejectOrder = async (orderId) => {
+    const backendURL = import.meta.env.VITE_BACKEND_URL;
 
-  //   await axios
-  //     .post(`${backendURL}/product/updateProduct/${id}`, data, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       dispatch(fetchProduct()).then(() => {
-  //         setIsLoading(false);
-  //         alert(res.data.message);
-  //         document.getElementById(`editProduct${id}`).close();
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       setValidation(err.response.data);
-  //       setIsLoading(false);
-  //     });
-  // };
+    setLoading(true);
+
+    await axios
+      .get(`${backendURL}/rejectOrder/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        dispatch(fetchOrder(token)).then(() => {
+          setLoading(false);
+          alert(res.data.message);
+        });
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <>
       {loading && (
+        <div className="fixed top-1/3 left-1/2 z-[9999]">
+          <span className="loading loading-spinner loading-lg text-first"></span>
+        </div>
+      )}
+      {isLoading && (
         <div className="fixed top-1/3 left-1/2 z-[9999]">
           <span className="loading loading-spinner loading-lg text-first"></span>
         </div>
@@ -198,11 +209,40 @@ export default function ProductTable() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         {item.status === "Paid" ? (
                           <div className="flex items-center gap-2 justify-center">
-                            <button className="btn btn-success btn-xs text-white">Accept</button>
-                            <button className="btn btn-error btn-xs text-white">Reject</button>
+                            <button
+                              className="btn btn-success btn-xs text-white"
+                              onClick={() => {
+                                if (confirm("Accept order?")) {
+                                  handleAcceptOrder(item.id);
+                                }
+                              }}
+                            >
+                              Accept
+                            </button>
+                            <button
+                              className="btn btn-error btn-xs text-white"
+                              onClick={() => {
+                                if (confirm("Reject order?")) {
+                                  handleRejectOrder(item.id);
+                                }
+                              }}
+                            >
+                              Reject
+                            </button>
                           </div>
                         ) : (
-                          item.status === "Unpaid" && <button className="btn btn-error btn-xs text-white">Reject</button>
+                          item.status === "Unpaid" && (
+                            <button
+                              className="btn btn-error btn-xs text-white"
+                              onClick={(e) => {
+                                if (confirm("Reject order?")) {
+                                  handleRejectOrder(e, item.id);
+                                }
+                              }}
+                            >
+                              Reject
+                            </button>
+                          )
                         )}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">

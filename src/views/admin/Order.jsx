@@ -22,7 +22,7 @@ export default function Order() {
         },
       })
       .then(() => {
-        dispatch(fetchOrder(token));
+        dispatch(fetchOrder());
       })
       .catch((err) => console.log(err));
   }, [token]);

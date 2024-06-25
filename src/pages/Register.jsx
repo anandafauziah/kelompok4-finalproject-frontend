@@ -128,11 +128,11 @@ function Register() {
 
   return (
     <>
-      {isRegisterLoading && (
+      {/* {isRegisterLoading && (
         <div className="absolute top-1/3 left-1/2 text-lg">
           <span className="loading loading-spinner loading-lg text-second"></span>
         </div>
-      )}
+      )} */}
       <div className="flex justify-center w-full bg-first md:py-12 md:px-20 px-5 py-10 min-h-screen font-rubik">
         <div className="md:w-2/3 bg-second md:block hidden">
           <div className="bg-beige-500 flex items-center p-10 h-full">
@@ -217,13 +217,12 @@ function Register() {
             <p className="my-2 text-red-500 text-xs">{validation.password && validation.password}</p>
             <InputComponent id={"passwordConfirmation"} label={"Repeat password"} type={"password"} value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} />
             <div>
-              <button className="w-full bg-first text-white p-2 rounded-md hover:bg-second focus:outline-none focus:bg-second mt-8">Sign Up</button>
+              <button className="w-full bg-first text-white p-2 rounded-md hover:bg-second focus:outline-none focus:bg-second mt-8">{isRegisterLoading ? "Signing up..." : "Sign up"}</button>
             </div>
             <div className="text-center">
               <p className="text-lg text-gray-600">
                 Already have an account?
                 <Link to="/login" className="text-[#E4C59E] hover:text-orange-500 font-medium">
-                  {" "}
                   Sign in
                 </Link>
               </p>

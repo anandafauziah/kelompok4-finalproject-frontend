@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import UserDropdown from "../Dropdowns/UserDropdown";
-import { FaBars, FaUsers, FaShirt, FaMoneyBill, FaReceipt, FaTableColumns } from "react-icons/fa6";
+import { FaBars, FaUsers, FaShirt, FaMoneyBill, FaReceipt, FaTableColumns, FaShirtsinbulk } from "react-icons/fa6";
 import Logo from "../../Logo";
 import { useLocation } from "react-router-dom";
 
@@ -70,6 +70,14 @@ export default function Sidebar() {
                 <Link className={`text-xs capitalize py-3 font-semibold block text-second hover:text-third duration-700 ${location.pathname == "/admin/user" ? "text-third hover:text-second" : ""}`} to="/admin/user">
                   <div className={"flex items-center gap-x-2 text-sm"}>
                     <FaUsers /> Users
+                  </div>
+                </Link>
+              </li>
+
+              <li className="items-center">
+                <Link className={`text-xs capitalize py-3 font-semibold block text-second hover:text-third duration-700 ${location.pathname == "/admin/category" ? "text-third hover:text-second" : ""}`} to="/admin/category">
+                  <div className={"flex items-center gap-x-2 text-sm"}>
+                    <FaShirtsinbulk /> Categories
                   </div>
                 </Link>
               </li>

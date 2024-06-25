@@ -5,7 +5,7 @@ import { getCities, getPostalCode } from "../api";
 import { getAdmin, getUser } from "../slices/userSlice";
 import axios from "axios";
 import { fetchProvince } from "../slices/provinceSlice";
-import { createOrder, fetchOrder } from "../slices/orderSlice";
+import { fetchOrder } from "../slices/orderSlice";
 
 function UserPayment() {
   useEffect(() => {

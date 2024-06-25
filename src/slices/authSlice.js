@@ -18,13 +18,8 @@ const authSlice = createSlice({
       state.token = null;
       state.expired = 0;
     },
-    refresh: (state) => {
-      const { token, expired } = action.payload;
-      state.token = token;
-      state.expired = 0;
-    },
   },
 });
 
-export const { login, logout, refresh } = authSlice.actions;
+export const { login, logout } = authSlice.actions;
 export default authSlice.reducer;
