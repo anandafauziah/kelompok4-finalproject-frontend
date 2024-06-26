@@ -30,13 +30,6 @@ function UserPayment() {
   const [adminProvince, setAdminProvince] = useState(admin?.address && admin?.address.province);
   const [adminCity, setAdminCity] = useState(admin?.address && admin?.address.city);
 
-  // Fetch Provinces
-  useEffect(() => {
-    if (!provinces) {
-      dispatch(fetchProvince());
-    }
-  }, []);
-
   // Update Address
   const [isLoading, setIsLoading] = useState(false);
   const [isCityLoading, setIsCityLoading] = useState(false);

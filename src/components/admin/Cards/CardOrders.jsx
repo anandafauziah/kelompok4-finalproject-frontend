@@ -93,7 +93,7 @@ export default function CardOrders() {
               </tr>
             </thead>
             <tbody>
-              {orders && newOrders ? (
+              {orders.length > 0 && newOrders.length > 0 ? (
                 newOrders.map((item) => {
                   return (
                     <tr key={item.id}>

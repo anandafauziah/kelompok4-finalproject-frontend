@@ -170,7 +170,7 @@ export default function OrderTable() {
                     </tr>
                   );
                 })
-              ) : orders ? (
+              ) : orders.length > 0 ? (
                 orders.map((item) => {
                   return (
                     <tr key={item.id}>
@@ -258,7 +258,7 @@ export default function OrderTable() {
                 })
               ) : (
                 <tr>
-                  <td colSpan={7} className="text-center py-10">
+                  <td colSpan={8} className="text-center py-10">
                     Empty
                   </td>
                 </tr>

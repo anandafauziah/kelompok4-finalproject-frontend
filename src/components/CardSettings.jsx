@@ -126,6 +126,7 @@ function CardSettings() {
         dispatch(getUser(token));
         setIsLoading(false);
         alert(response.data.message);
+        window.location.reload();
       })
       .catch((err) => {
         setUpdateValidation(err.response.data);

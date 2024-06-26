@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { getUser } from "../../../slices/userSlice";
 import { getCities, getPostalCode } from "../../../api";
+import { fetchProvince } from "../../../slices/provinceSlice";
 
 function CardSettings() {
   const { token } = useSelector((state) => state.auth);
@@ -10,6 +11,12 @@ function CardSettings() {
   const { provinces, loading } = useSelector((state) => state.province);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getUser(token));
+    }
+  }, [token]);
 
   // Fetch Regions
   const [isCityLoading, setIsCityLoading] = useState(false);
@@ -97,6 +104,7 @@ function CardSettings() {
       })
       .catch((err) => console.log(err.response.data));
   };
+  console.log(user);
 
   const handleUpdateUser = async () => {
     const backendURL = import.meta.env.VITE_BACKEND_URL;

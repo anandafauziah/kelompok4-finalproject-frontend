@@ -15,20 +15,12 @@ const UserProfile = () => {
   useLogin();
 
   const { token } = useSelector((state) => state.auth);
-  const { provinces } = useSelector((state) => state.province);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (token) {
       dispatch(getUser(token));
-    }
-  }, [token]);
-
-  // Fetch Provinces
-  useEffect(() => {
-    if (token && !provinces) {
-      dispatch(fetchProvince());
     }
   }, [token]);
 

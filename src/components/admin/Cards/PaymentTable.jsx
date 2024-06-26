@@ -24,9 +24,6 @@ export default function PaymentTable() {
     }
   }, [payments, searchKey]);
 
-  console.log(payments);
-  console.log(searchPayments);
-
   return (
     <>
       {paymentLoading && (
@@ -89,7 +86,7 @@ export default function PaymentTable() {
                     </tr>
                   );
                 })
-              ) : payments ? (
+              ) : payments.length > 0 ? (
                 payments.map((item) => {
                   return (
                     <tr key={item.id}>

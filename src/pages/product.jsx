@@ -57,7 +57,7 @@ const ProductPage = () => {
       )}
       <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-16 md:px-16 grow">
         {loading ? (
-          <div className="fixed top-1/3 text-lg">
+          <div className="fixed top-1/3 text-lg z-[99999]">
             <span className="loading loading-bars loading-lg text-first"></span>
           </div>
         ) : searchKey ? (
