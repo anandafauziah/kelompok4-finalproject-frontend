@@ -5,7 +5,6 @@ import RegisterImg from "../img/RegisterImg.png";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { getProvinces, getCities, getPostalCode } from "../api";
 
 function Register() {
   useEffect(() => {
@@ -27,72 +26,12 @@ function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [phone, setPhone] = useState("");
-  const [province, setProvince] = useState("");
-  const [city, setCity] = useState("");
-  const [postalCode, setPostalCode] = useState("");
 
   // Validation
   const [validation, setValidation] = useState([]);
 
   // Loading
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
-
-  // Raja Ongkir API
-  const [isProvincesLoading, setIsProvincesLoading] = useState(false);
-  const [isCitiesLoading, setIsCitiesLoading] = useState(false);
-  const [isPostalCodeLoading, setIsPostalCodeLoading] = useState(false);
-  const [provinces, setProvinces] = useState([]);
-  const [cities, setCities] = useState([]);
-
-  // Fetch Provinces
-  useEffect(() => {
-    const fetchProvinces = async () => {
-      try {
-        setIsProvincesLoading(true);
-        const data = await getProvinces();
-        setProvinces(data);
-        setIsProvincesLoading(false);
-      } catch (error) {
-        return;
-      }
-    };
-    fetchProvinces();
-  }, []);
-
-  // Fetch Cities
-  const fetchCities = async (provinceId) => {
-    try {
-      setIsCitiesLoading(true);
-      const data = await getCities(provinceId);
-      setCities(data);
-      setIsCitiesLoading(false);
-    } catch (error) {
-      return;
-    }
-  };
-
-  // Fetch Postal Code
-  const fetchPostalCode = async (cityId) => {
-    try {
-      setIsPostalCodeLoading(true);
-      const data = await getPostalCode(cityId);
-      setPostalCode(data);
-      setIsPostalCodeLoading(false);
-    } catch (error) {
-      return;
-    }
-  };
-
-  const setProvinceName = (id) => {
-    const province = provinces.find((province) => province.province_id === id);
-    setProvince(province.province);
-  };
-
-  const setCityName = (id) => {
-    const city = cities.find((cities) => cities.city_id == id);
-    setCity(city.type + " " + city.city_name);
-  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -104,10 +43,6 @@ function Register() {
     formData.append("email", email);
     formData.append("password", password);
     formData.append("password_confirmation", passwordConfirmation);
-    formData.append("phone", phone);
-    formData.append("province", province);
-    formData.append("city", city);
-    formData.append("postal_code", postalCode);
 
     setIsRegisterLoading(true);
 
@@ -140,74 +75,19 @@ function Register() {
             <h2 className="text-3xl font-bold text-[#AF8260] text-center border-b-2 border-[#A0A0A0] mb-3">JO'E CAPE</h2>
           </a>
           <form onSubmit={handleRegister} className="space-y-2">
-            <InputComponent id={"name"} label={"Name"} type={"text"} value={name} onChange={(e) => setName(e.target.value)} />
-            <p className="my-2 text-red-500 text-xs">{validation.name && validation.name}</p>
-            <InputComponent id={"username"} label={"Username"} type={"text"} value={username} onChange={(e) => setUsername(e.target.value)} />
-            <p className="my-2 text-red-500 text-xs">{validation.username && validation.username}</p>
-            <InputComponent id={"email"} label={"Email"} type={"text"} value={email} onChange={(e) => setEmail(e.target.value)} />
-            <p className="my-2 text-red-500 text-xs">{validation.email && validation.email}</p>
-            <div className="flex flex-wrap items-center gap-5 w-full">
-              <div className="flex w-auto flex-col gap-y-1">
-                <label htmlFor="province">Province</label>
-                <select
-                  className="border rounded p-2 text-sm"
-                  id="province"
-                  onChange={(e) => {
-                    fetchCities(e.target.value);
-                    setProvinceName(e.target.value);
-                  }}
-                >
-                  <option selected disabled>
-                    Choose Province
-                  </option>
-                  {isProvincesLoading ? (
-                    <option>Loading...</option>
-                  ) : (
-                    provinces?.map((province) => {
-                      return (
-                        <option key={province.province_id} className="text-sm" value={province.province_id}>
-                          {province.province}
-                        </option>
-                      );
-                    })
-                  )}
-                </select>
+            <div className="flex items-center gap-5">
+              <div className="w-full">
+                <InputComponent id={"name"} label={"Name"} type={"text"} value={name} onChange={(e) => setName(e.target.value)} />
+                <p className="my-2 text-red-500 text-xs">{validation.name && validation.name}</p>
               </div>
-              <div className="flex w-auto flex-col gap-y-1">
-                <label htmlFor="city">City</label>
-                <select
-                  className="text-sm border rounded p-2"
-                  id="city"
-                  onChange={(e) => {
-                    fetchPostalCode(e.target.value);
-                    setCityName(e.target.value);
-                  }}
-                >
-                  <option selected disabled>
-                    Choose City
-                  </option>
-                  {isCitiesLoading ? (
-                    <option>Loading...</option>
-                  ) : (
-                    cities?.map((city) => {
-                      return (
-                        <option key={city.city_id} value={city.city_id}>
-                          {city.type} {city.city_name}
-                        </option>
-                      );
-                    })
-                  )}
-                </select>
-              </div>
-              <div className="flex w-auto flex-col gap-y-1">
-                <label htmlFor="postalCode">Postal Code</label>
-                <select className="text-sm border rounded p-2" id="postalCode">
-                  {isPostalCodeLoading ? <option>Loading...</option> : <option value={postalCode}>{postalCode}</option>}
-                </select>
+              <div className="w-full">
+                <InputComponent id={"username"} label={"Username"} type={"text"} value={username} onChange={(e) => setUsername(e.target.value)} />
+                <p className="my-2 text-red-500 text-xs">{validation.username && validation.username}</p>
               </div>
             </div>
-            <InputComponent id={"phoneNumber"} label={"Phone Number"} type={"number"} value={phone} onChange={(e) => setPhone(e.target.value)} />
-            <p className="my-2 text-red-500 text-xs">{validation.phone && validation.phone}</p>
+
+            <InputComponent id={"email"} label={"Email"} type={"text"} value={email} onChange={(e) => setEmail(e.target.value)} />
+            <p className="my-2 text-red-500 text-xs">{validation.email && validation.email}</p>
             <InputComponent id={"password"} label={"Password"} type={"password"} value={password} onChange={(e) => setPassword(e.target.value)} />
             <p className="my-2 text-red-500 text-xs">{validation.password && validation.password}</p>
             <InputComponent id={"passwordConfirmation"} label={"Repeat password"} type={"password"} value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} />

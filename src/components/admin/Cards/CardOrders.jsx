@@ -148,6 +148,16 @@ export default function CardOrders() {
                             >
                               Accept
                             </button>
+                            <button
+                              className="btn btn-error btn-xs text-white"
+                              onClick={() => {
+                                if (confirm("Reject order?")) {
+                                  handleRejectOrder(item.id);
+                                }
+                              }}
+                            >
+                              Reject
+                            </button>
                           </div>
                         ) : (
                           item.status === "Unpaid" && (
