@@ -26,16 +26,20 @@ const Footer = () => {
           <a href="/product" className="text-sm text-second">
             Products
           </a>
-          <a href="/" className="text-sm text-second">
+          <a href="/product" className="text-sm text-second">
             Services
           </a>
-          <a href="/" className="text-sm text-second">
+          <a href="/product" className="text-sm text-second">
             Lifestyle
           </a>
         </div>
         <div className="flex flex-col gap-y-2">
           <div className="text-md text-third mb-1">Support</div>
-          <a href="" className="text-sm text-second">
+          <a
+            target="_blank"
+            href="https://l.instagram.com/?u=http%3A%2F%2Fapi.whatsapp.com%2Fsend%3Fphone%3D6281225710390&e=AT077lLpuGKzvT-DM_5_pgSvTHxn87fqZWh9LMbYBb2DqgovlW6T36cq9JjbCgndlKODRKwdYt-tf_5Qhe3Gbngqy2oL0cTf"
+            className="text-sm text-second"
+          >
             Contact
           </a>
           <a target="_blank" href="mailto:joecapestore001@gmail.com" className="text-sm text-second">
@@ -44,7 +48,7 @@ const Footer = () => {
         </div>
         <div className="flex flex-col gap-y-2">
           <div className="text-md text-third mb-1">About</div>
-          <a href="" className="text-sm text-second">
+          <a href="/about" className="text-sm text-second">
             About us
           </a>
         </div>

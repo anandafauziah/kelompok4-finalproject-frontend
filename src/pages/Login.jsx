@@ -60,11 +60,6 @@ function Login() {
 
   return (
     <>
-      {/* {isLoginLoading && (
-        <div className="absolute top-1/3 left-1/2 text-lg">
-          <span className="loading loading-spinner loading-lg text-second"></span>
-        </div>
-      )} */}
       {loginError && (
         <div className="flex justify-center">
           <div role="alert" className="absolute top-10 w-1/2 alert alert-error text-white font-semibold">

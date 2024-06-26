@@ -73,6 +73,9 @@ const Navbar = () => {
             <li>
               <a href="/product">Products</a>
             </li>
+            <li>
+              <a href="/about">About</a>
+            </li>
           </ul>
         </div>
         <div className="navbar hidden lg:flex lg:justify-center">
@@ -87,6 +90,11 @@ const Navbar = () => {
                 Product
               </a>
             </li>
+            <li>
+              <a href="/about" className={`duration-500 ${location.pathname == "/about" ? "bg-first text-third font-semibold" : ""}`}>
+                About
+              </a>
+            </li>
           </ul>
         </div>
         <div className="flex-none gap-x-1">
@@ -99,10 +107,10 @@ const Navbar = () => {
                   </svg>
                 </div>
               </div>
-              <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
+              <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 md:w-64 bg-base-100 shadow">
                 <div className="card-body">
                   <div className="form-control">
-                    <input type="text" placeholder="Search" className="input input-bordered md:w-auto" onChange={(e) => dispatch(setSearchKey(e.target.value))} />
+                    <input type="text" placeholder="Search product name/category.." className="text-xs input input-bordered md:w-auto" onChange={(e) => dispatch(setSearchKey(e.target.value))} />
                   </div>
                 </div>
               </div>

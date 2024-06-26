@@ -48,7 +48,7 @@ const ProductPage = () => {
   }, [token]);
 
   return (
-    <div className="flex flex-col gap-24 min-h-screen">
+    <div className="flex flex-col gap-24 min-h-screen font-rubik">
       <Header title="Products" />
       {cartLoading && (
         <div className="fixed top-1/3 left-1/2 text-lg z-[99999]">

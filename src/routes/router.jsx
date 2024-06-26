@@ -18,6 +18,7 @@ import Product from "../views/admin/Product";
 import Order from "../views/admin/Order";
 import Profile from "../views/admin/Profile";
 import UserOrder from "../pages/userOrder";
+import About from "../pages/about";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: "/product/:slug",
     element: <DetailProductPage />,
+  },
+  {
+    path: "/about",
+    element: <About />,
   },
   {
     path: "/cart",

@@ -2,7 +2,7 @@ const Logo = (props) => {
   const { size } = props;
   return (
     <>
-      <img className="brightness-50" src="/logo.png" alt="" width={size} height={size} />
+      <img className="brightness-50 rounded-full" src="/logo.png" alt="" width={size} height={size} />
     </>
   );
 };

@@ -7,6 +7,7 @@ import { fetchCart } from "../slices/cartSlices";
 import useLogin from "../hooks/useLogin";
 import { fetchProduct } from "../slices/productSlice";
 import { fetchProvince } from "../slices/provinceSlice";
+import Carousel from "../components/Carousel";
 
 const HomePage = () => {
   useEffect(() => {
@@ -19,7 +20,7 @@ const HomePage = () => {
   const { provinces } = useSelector((state) => state.province);
 
   useEffect(() => {
-    if (provinces.length === 0) {
+    if (provinces.length == 0) {
       dispatch(fetchProvince());
     }
   }, [provinces]);
@@ -48,10 +49,17 @@ const HomePage = () => {
     setNewArrivalsLoading(false);
   }, []);
 
-  console.log(newArrivals);
+  // const [images, setImages] = useState([]);
+
+  // useEffect(() => {
+  //   if (newArrivals) {
+  //     const images = newArrivals.map((item) => item.image);
+  //     setImages(images);
+  //   }
+  // }, [newArrivals]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen font-rubik">
       <div className="bg-third">
         <Navbar />
       </div>
@@ -65,6 +73,7 @@ const HomePage = () => {
           <span className="loading loading-bars loading-lg text-first"></span>
         </div>
       )}
+      {/* {images.length > 0 && <Carousel images={images} />} */}
       <div className="text-center font-semibold text-2xl mt-24">New Arrivals</div>
       <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-10 md:px-16 my-20 grow">
         {loading ? (

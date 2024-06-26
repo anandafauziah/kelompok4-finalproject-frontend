@@ -75,7 +75,7 @@ const DetailProductPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-16">
+    <div className="flex flex-col gap-16 font-rubik">
       <Header title={product.title} />
       {loading && (
         <div className="fixed top-32 left-1/2 text-lg z-[9999]">
